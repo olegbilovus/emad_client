@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppbar({super.key});
+class CustomAppbarBack extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  const CustomAppbarBack({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       leading: IconButton(
         onPressed: () {
-          Get.toNamed('/settings');
+          Get.back();
         },
         icon: const Icon(
-          Icons.settings,
+          Icons.arrow_back_ios,
           color: Colors.black,
         ),
       ),
-      title: const Text(
-        "CAApp",
-        style: TextStyle(color: Colors.black),
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.black),
       ),
       centerTitle: true,
     );
