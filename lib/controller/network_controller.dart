@@ -4,18 +4,15 @@ import 'package:get/get.dart';
 class NetworkController extends GetxController {
   final Connectivity _connectivity = Connectivity();
 
-  @override
-  void onInit() {
-    super.onInit();
-    _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+  Connectivity getConnectivity() {
+    return this._connectivity;
   }
 
-  void _updateConnectionStatus(List<ConnectivityResult> connectivityResults) {
-    if (connectivityResults.contains(ConnectivityResult.none)) {
-      Get.offAllNamed(
-          '/no_connection'); //non mantiene lo stack della navigazione
-    } else {
-      Get.offAllNamed('/'); //non mantiene lo stack della navigazione
+  Future<bool> checkConnection() async {
+    final connectivityResult = await _connectivity.checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.none)) {
+      return false;
     }
+    return true;
   }
 }
