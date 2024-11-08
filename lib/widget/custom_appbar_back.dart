@@ -19,7 +19,8 @@ class CustomAppbarBack extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: Text(
         title,
-        style: const TextStyle(color: Colors.black),
+        style:
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
       centerTitle: true,
     );

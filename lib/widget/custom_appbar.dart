@@ -18,7 +18,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: const Text(
         "CAApp",
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
       centerTitle: true,
     );

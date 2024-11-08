@@ -1,10 +1,11 @@
-import 'package:emad_client/controller/network_controller.dart';
 import 'package:emad_client/dependency_injection.dart';
 import 'package:emad_client/screens/no_connection.dart';
 import 'package:emad_client/screens/settings.dart';
 import 'package:emad_client/widget/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,9 +18,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'CAApp',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF60A561)),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'CAApp'),
@@ -52,23 +54,149 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final TextEditingController _textEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppbar(),
-      body: Center(
+      body: SingleChildScrollView(
+        // Aggiungi un SingleChildScrollView per rendere il layout scrollabile
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("Ciao, cosa vuoi generare"),
-              TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: '...',
+              Container(
+                height: MediaQuery.of(context).size.height * 0.35,
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  width: 250.0,
+                  child: ShaderMask(
+                    shaderCallback: (bounds) => const LinearGradient(
+                      colors: [
+                        Colors.black,
+                        Color(0xFF60A561),
+                        Color(0xFF60A561),
+                        Color(0xFF60A561),
+                        Color(0xFF305331),
+                        Color(0xFF305331),
+                        Color(0xFF305331),
+                        Colors.black,
+                      ],
+                    ).createShader(bounds),
+                    blendMode: BlendMode.srcIn,
+                    child: DefaultTextStyle(
+                      style: const TextStyle(
+                          fontSize: 30.0, fontWeight: FontWeight.bold),
+                      child: AnimatedTextKit(
+                        repeatForever: true,
+                        animatedTexts: [
+                          TypewriterAnimatedText(
+                            'Ciao, cosa posso generare?',
+                            speed: const Duration(milliseconds: 200),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
+              ),
+              const SizedBox(
+                  height:
+                      270.0), // Aggiungi uno spazio fisso tra il contenuto animato e il TextField
+              Container(
+                height: MediaQuery.of(context).size.height *
+                    0.1, // Altezza per il TextField
+                child: TextField(
+                  controller: _textEditingController,
+                  decoration: InputDecoration(
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: GestureDetector(
+                        onLongPress: () {
+                          //attiva il "speech to text"
+                        },
+                        child: const Icon(Icons.mic, color: Color(0xFF60A561)),
+                      ),
+                    ),
+                    suffixIcon: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Icon(Icons.send, color: Color(0xFF60A561)),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    hintText: '...',
+                  ),
+                ),
+              ),
+              const SizedBox(
+                  height: 8.0), // Spazio tra il TextField e il Divider
+              // Divider e icona
+              Column(
+                children: [
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          margin:
+                              const EdgeInsets.only(left: 10.0, right: 20.0),
+                          child: const Divider(
+                            color: Colors.grey,
+                            thickness: 1,
+                          ),
+                        ),
+                      ),
+                      const Text("cronologia"),
+                      Expanded(
+                        child: Container(
+                          margin:
+                              const EdgeInsets.only(left: 20.0, right: 10.0),
+                          child: const Divider(
+                            color: Colors.grey,
+                            thickness: 1,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      WoltModalSheet.show(
+                        context: context,
+                        pageListBuilder: (bottomSheetContext) => [
+                          SliverWoltModalSheetPage(
+                            mainContentSliversBuilder: (context) => [
+                              SliverToBoxAdapter(
+                                child: Center(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Image.asset(
+                                        "assets/icons/history.png",
+                                        height: 45,
+                                        width: 45,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        "Cronologia",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                    icon: const Icon(Icons.keyboard_arrow_up),
+                  ),
+                ],
               ),
             ],
           ),
