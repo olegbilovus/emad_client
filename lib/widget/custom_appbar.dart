@@ -1,3 +1,4 @@
+import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,9 +17,10 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.black,
         ),
       ),
-      title: const Text(
-        "CAApp",
-        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      title: Text(
+        context.loc.app_title,
+        style:
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
       centerTitle: true,
     );

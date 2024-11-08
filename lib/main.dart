@@ -1,10 +1,12 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:emad_client/dependency_injection.dart';
+import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/screens/no_connection.dart';
 import 'package:emad_client/screens/settings.dart';
 import 'package:emad_client/widget/custom_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 void main() {
@@ -18,6 +20,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       debugShowCheckedModeBanner: false,
       title: 'CAApp',
       theme: ThemeData(
@@ -55,6 +59,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _textEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         repeatForever: true,
                         animatedTexts: [
                           TypewriterAnimatedText(
-                            'Ciao, cosa posso generare?',
+                            context.loc.welcome_msg,
                             speed: const Duration(milliseconds: 200),
                           ),
                         ],
@@ -101,10 +106,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              const SizedBox(
-                  height:
-                      270.0), // Aggiungi uno spazio fisso tra il contenuto animato e il TextField
-              Container(
+              const SizedBox(height: 270.0),
+              // Aggiungi uno spazio fisso tra il contenuto animato e il TextField
+              SizedBox(
                 height: MediaQuery.of(context).size.height *
                     0.1, // Altezza per il TextField
                 child: TextField(
@@ -130,8 +134,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              const SizedBox(
-                  height: 8.0), // Spazio tra il TextField e il Divider
+              const SizedBox(height: 8.0),
+              // Spazio tra il TextField e il Divider
               // Divider e icona
               Column(
                 children: [
@@ -147,7 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                       ),
-                      const Text("cronologia"),
+                      Text(context.loc.history),
                       Expanded(
                         child: Container(
                           margin:
@@ -178,9 +182,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                         width: 45,
                                       ),
                                       const SizedBox(height: 8),
-                                      const Text(
-                                        "Cronologia",
-                                        style: TextStyle(
+                                      Text(
+                                        context.loc.history,
+                                        style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 class CustomAppbarBack extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+
   const CustomAppbarBack({super.key, required this.title});
 
   @override
