@@ -1,1 +1,9 @@
-{}
+{
+  "@@locale": "en",
+  "app_title": "CAApp",
+  "welcome_msg": "Hi, what can I generate?",
+  "history": "History",
+  "no_network": "No Internet connection",
+  "no_network_q": "Are you connected to the network?",
+  "settings": "Settings"
+}

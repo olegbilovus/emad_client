@@ -49,6 +49,66 @@ class S {
   static S? maybeOf(BuildContext context) {
     return Localizations.of<S>(context, S);
   }
+
+  /// `CAApp`
+  String get app_title {
+    return Intl.message(
+      'CAApp',
+      name: 'app_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hi, what can I generate?`
+  String get welcome_msg {
+    return Intl.message(
+      'Hi, what can I generate?',
+      name: 'welcome_msg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `History`
+  String get history {
+    return Intl.message(
+      'History',
+      name: 'history',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Internet connection`
+  String get no_network {
+    return Intl.message(
+      'No Internet connection',
+      name: 'no_network',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you connected to the network?`
+  String get no_network_q {
+    return Intl.message(
+      'Are you connected to the network?',
+      name: 'no_network_q',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings`
+  String get settings {
+    return Intl.message(
+      'Settings',
+      name: 'settings',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -57,6 +117,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'it'),
     ];
   }
 

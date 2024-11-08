@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a en locale. All the
+// This is a library that provides messages for a it locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -18,18 +18,18 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'en';
+  String get localeName => 'it';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "app_title": MessageLookupByLibrary.simpleMessage("CAApp"),
-        "history": MessageLookupByLibrary.simpleMessage("History"),
-        "no_network":
-            MessageLookupByLibrary.simpleMessage("No Internet connection"),
-        "no_network_q": MessageLookupByLibrary.simpleMessage(
-            "Are you connected to the network?"),
-        "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "history": MessageLookupByLibrary.simpleMessage("Cronologia"),
+        "no_network": MessageLookupByLibrary.simpleMessage(
+            "Connessione Internet assente"),
+        "no_network_q":
+            MessageLookupByLibrary.simpleMessage("Sei collegato alla rete?"),
+        "settings": MessageLookupByLibrary.simpleMessage("Impostazioni"),
         "welcome_msg":
-            MessageLookupByLibrary.simpleMessage("Hi, what can I generate?")
+            MessageLookupByLibrary.simpleMessage("Ciao, coso posso generare?")
       };
 }
