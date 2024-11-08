@@ -1,3 +1,4 @@
+import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/widget/custom_appbar_back.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,7 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppbarBack(
-        title: "Impostazioni",
+        title: context.loc.settings,
       ),
     );
   }

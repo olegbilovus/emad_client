@@ -5,7 +5,7 @@ class NetworkController extends GetxController {
   final Connectivity _connectivity = Connectivity();
 
   Connectivity getConnectivity() {
-    return this._connectivity;
+    return _connectivity;
   }
 
   Future<bool> checkConnection() async {
