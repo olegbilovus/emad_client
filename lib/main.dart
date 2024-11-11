@@ -1,4 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:emad_client/controller/history_controller.dart';
 import 'package:emad_client/dependency_injection.dart';
 import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/screens/no_connection.dart';
@@ -59,13 +60,19 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _textEditingController = TextEditingController();
+  final HistoryController _historyController = HistoryController();
+
+  @override
+  void initState() {
+    super.initState();
+    _historyController.init();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppbar(),
       body: SingleChildScrollView(
-        // Aggiungi un SingleChildScrollView per rendere il layout scrollabile
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
@@ -123,9 +130,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: const Icon(Icons.mic, color: Color(0xFF60A561)),
                       ),
                     ),
-                    suffixIcon: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Icon(Icons.send, color: Color(0xFF60A561)),
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: IconButton(
+                        onPressed: () {
+                          _historyController.getHistory();
+                          _historyController
+                              .addToHistory(_textEditingController.text);
+                        },
+                        icon: const Icon(Icons.send, color: Color(0xFF60A561)),
+                      ),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -135,8 +149,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               const SizedBox(height: 8.0),
-              // Spazio tra il TextField e il Divider
-              // Divider e icona
               Column(
                 children: [
                   Row(
@@ -164,42 +176,193 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
-                  IconButton(
-                    onPressed: () {
-                      WoltModalSheet.show(
-                        context: context,
-                        pageListBuilder: (bottomSheetContext) => [
-                          SliverWoltModalSheetPage(
-                            mainContentSliversBuilder: (context) => [
-                              SliverToBoxAdapter(
-                                child: Center(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Image.asset(
-                                        "assets/icons/history.png",
-                                        height: 45,
-                                        width: 45,
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        context.loc.history,
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onVerticalDragUpdate: (details) {
+                      // Se lo swipe è verso l'alto, apri il bottom sheet
+                      if (details.primaryDelta! < -10) {
+                        // Swipe verso l'alto
+                        final history = _historyController.getHistory();
+                        WoltModalSheet.show(
+                          context: context,
+                          pageListBuilder: (bottomSheetContext) => [
+                            SliverWoltModalSheetPage(
+                              mainContentSliversBuilder: (context) => [
+                                SliverToBoxAdapter(
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Image.asset(
+                                          "assets/icons/history.png",
+                                          height: 45,
+                                          width: 45,
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          context.loc.history,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        // Lista della cronologia
+                                        if (history.isNotEmpty)
+                                          SizedBox(
+                                            height: 200, // Altezza della lista
+                                            child: Wrap(
+                                              spacing:
+                                                  10.0, // Spazio orizzontale tra gli elementi
+                                              runSpacing:
+                                                  10.0, // Spazio verticale tra le righe
+                                              children: List.generate(
+                                                  history.length, (index) {
+                                                return Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 8),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.green
+                                                        .shade100, // Colore di sfondo
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20), // Bordo smussato
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.2),
+                                                        spreadRadius: 1,
+                                                        blurRadius: 5,
+                                                        offset: const Offset(0,
+                                                            2), // Posizione della ombra
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: Text(
+                                                    history.elementAt(index),
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors
+                                                          .black, // Colore del testo
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                            ),
+                                          )
+                                        else
+                                          const Text(
+                                            "Nessuna cronologia disponibile",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.grey),
+                                          ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
+                              ],
+                            ),
+                          ],
+                        );
+                      }
                     },
-                    icon: const Icon(Icons.keyboard_arrow_up),
-                  ),
+                    child: IconButton(
+                      onPressed: () {
+                        final history = _historyController.getHistory();
+                        WoltModalSheet.show(
+                          context: context,
+                          pageListBuilder: (bottomSheetContext) => [
+                            SliverWoltModalSheetPage(
+                              mainContentSliversBuilder: (context) => [
+                                SliverToBoxAdapter(
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Image.asset(
+                                          "assets/icons/history.png",
+                                          height: 45,
+                                          width: 45,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          context.loc.history,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        // Lista della cronologia
+                                        if (history.isNotEmpty)
+                                          SizedBox(
+                                            height: 200, // Altezza della lista
+                                            child: Wrap(
+                                              spacing:
+                                                  10.0, // Spazio orizzontale tra gli elementi
+                                              runSpacing:
+                                                  10.0, // Spazio verticale tra le righe
+                                              children: List.generate(
+                                                  history.length, (index) {
+                                                return Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 8),
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        Colors.green.shade100,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.2),
+                                                        spreadRadius: 1,
+                                                        blurRadius: 5,
+                                                        offset: const Offset(0,
+                                                            2), // Posizione della ombra
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: Text(
+                                                    history.elementAt(index),
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors
+                                                          .black, // Colore del testo
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                            ),
+                                          )
+                                        else
+                                          const Text(
+                                            "Nessuna cronologia disponibile",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.grey),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                      icon: const Icon(Icons.keyboard_arrow_up),
+                    ),
+                  )
                 ],
               ),
             ],
