@@ -30,12 +30,12 @@ class HistoryController {
       return;
     }
 
+    // Controllo sulla lunghezza
     if (_historyQueue.length >= maxSize) {
-      _historyQueue
-          .removeFirst(); // Rimuove il più vecchio se la cronologia è piena
+      _historyQueue.removeLast();
     }
-    _historyQueue
-        .addLast(item); // Aggiunge il nuovo elemento in fondo alla coda
+
+    _historyQueue.addFirst(item);
 
     // Salva la cronologia aggiornata in SharedPreferences
     await SharedPreferencesSingleton.instance.setQueue(_key, _historyQueue);
