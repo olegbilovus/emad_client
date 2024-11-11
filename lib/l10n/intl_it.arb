@@ -1,7 +1,7 @@
 {
   "@@locale": "it",
   "app_title": "CAApp",
-  "welcome_msg": "Ciao, coso posso generare?",
+  "welcome_msg": "Ciao, cosa posso generare?",
   "history": "Cronologia",
   "no_network": "Connessione Internet assente",
   "no_network_q": "Sei collegato alla rete?",
