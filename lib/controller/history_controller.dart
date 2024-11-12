@@ -27,7 +27,7 @@ class HistoryController {
   Future<void> addToHistory(String item) async {
     // Controllo sui duplicati
     if (_historyQueue.contains(item)) {
-      return;
+      _historyQueue.remove(item);
     }
 
     // Controllo sulla lunghezza
