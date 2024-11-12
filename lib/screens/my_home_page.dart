@@ -5,6 +5,7 @@ import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/widget/custom_appbar.dart';
 import 'package:emad_client/controller/network_controller.dart';
 import 'package:get/get.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -19,10 +20,13 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _textEditingController = TextEditingController();
   final HistoryController _historyController = HistoryController();
   final NetworkController _networkController = NetworkController();
+  final SpeechToText _speechToText = SpeechToText();
+  bool _isListening = false;
 
   @override
   void initState() {
     super.initState();
+    _speechToText.initialize();
     _historyController.init();
   }
 
@@ -161,10 +165,34 @@ class _MyHomePageState extends State<MyHomePage> {
                     prefixIcon: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: GestureDetector(
-                        onLongPress: () {
-                          // attiva il "speech to text"
+                        onLongPress: () async {
+                          //attiva il "text to speech"
+                          if (!_isListening) {
+                            bool available = await _speechToText.initialize();
+                            if (available) {
+                              setState(() => _isListening = true);
+                              _speechToText.listen(onResult: (result) {
+                                setState(() {
+                                  _textEditingController.text =
+                                      result.recognizedWords;
+                                });
+                              });
+                            }
+                          }
                         },
-                        child: const Icon(Icons.mic, color: Color(0xFF60A561)),
+                        onLongPressUp: () {
+                          //quando rilasci il dito dal microfono si spegne i riconoscimento vocale
+                          if (_isListening) {
+                            _speechToText.stop();
+                            setState(() => _isListening = false);
+                          }
+                        },
+                        child: Icon(
+                          Icons.mic,
+                          color: _isListening
+                              ? Colors.red
+                              : const Color(0xFF60A561),
+                        ),
                       ),
                     ),
                     suffixIcon: Padding(
