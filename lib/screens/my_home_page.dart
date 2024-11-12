@@ -3,6 +3,8 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:emad_client/controller/history_controller.dart';
 import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/widget/custom_appbar.dart';
+import 'package:emad_client/controller/network_controller.dart';
+import 'package:get/get.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -16,6 +18,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _textEditingController = TextEditingController();
   final HistoryController _historyController = HistoryController();
+  final NetworkController _networkController = NetworkController();
 
   @override
   void initState() {
@@ -167,10 +170,20 @@ class _MyHomePageState extends State<MyHomePage> {
                     suffixIcon: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: IconButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          //ottiene la cronologia
                           _historyController.getHistory();
+                          //aggiunge la frase alla cronologia
                           _historyController
                               .addToHistory(_textEditingController.text);
+
+                          //controllo sulla connessione
+                          bool status =
+                              await _networkController.checkConnection();
+                          if (status == false) {
+                            print("Stato connessione: $status");
+                            Get.toNamed('/no_connection');
+                          }
                         },
                         icon: const Icon(Icons.send, color: Color(0xFF60A561)),
                       ),
