@@ -152,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 270.0),
+              const SizedBox(height: 240.0),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
                 child: TextField(
