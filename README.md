@@ -1,16 +1,12 @@
 # emad_client
 
-A new Flutter project.
+Flutter application for Enterprise Mobile Application Development project.
 
-## Getting Started
+CAApp is a multiplatform application for **Augmentative Alternative Communication**. Through the prompt, it is possible to insert a sentence and obtain a sequence of images **(PECS)** to communicate with people with complex communication needs. It also offers the possibility of generating custom images generated with **GenAI** and image storage via Firebase.
 
-This project is a starting point for a Flutter application.
+## Technical informations
+CAApp is structured on a Client-Server architecture, based on [RestAPI](https://it.wikipedia.org/wiki/Representational_state_transfer)
+- Backend available [here](https://github.com/olegbilovus/emad_restapi)
+- PECS generation algorithm available [here](https://github.com/olegbilovus/emad_images)
+- GenAI supplied by [Azure](https://azure.microsoft.com) 
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
