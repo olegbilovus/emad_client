@@ -17,14 +17,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme =
+        ColorScheme.fromSeed(seedColor: const Color(0xFF60A561));
     return GetMaterialApp(
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       debugShowCheckedModeBanner: false,
+
       title: 'CAApp',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF60A561)),
+        colorScheme: colorScheme,
         useMaterial3: true,
+        appBarTheme: AppBarTheme(
+            scrolledUnderElevation: 0, backgroundColor: colorScheme.surface),
       ),
       home: const MyHomePage(title: 'CAApp'),
       //qua definiamo le pagine dell'app
