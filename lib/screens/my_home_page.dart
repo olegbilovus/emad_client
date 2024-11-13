@@ -161,6 +161,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: MediaQuery.of(context).size.height * 0.1,
                 child: TextField(
                   controller: _textEditingController,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
