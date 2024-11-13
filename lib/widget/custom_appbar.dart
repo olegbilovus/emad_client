@@ -23,6 +23,20 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
             const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
       centerTitle: true,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 6.0),
+          child: IconButton(
+            onPressed: () {
+              Get.toNamed('/user_page');
+            },
+            icon: const Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+          ),
+        )
+      ],
     );
   }
 
