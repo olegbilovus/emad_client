@@ -11,16 +11,15 @@ CAApp is structured on a Client-Server architecture, based on [RestAPI](https://
 - GenAI supplied by [Azure](https://azure.microsoft.com)
 
 ## Dependencies required
-|        | Android |  iOS  | Linux | macOS |  Web  | Windows |
-|-----------------------|:-------:|:-----:|:-----:|:-----:|:-----:|:-------:|
-| cupertino_icons       |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
-| connectivity_plus     |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
-| get                   |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
-| lottie                |   ✅    |   ✅   |       |   ✅   |       |   ✅    |
-| animated_text_kit     |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
-| simple_gradient_text  |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
-| shared_preferences    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
-| speech_to_text        |   ✅    |   ✅   |       |   ✅   |       |         |
-
+|                         | Android |  iOS  | Linux | macOS |  Web  | Windows |
+|-------------------------|:-------:|:-----:|:-----:|:-----:|:-----:|:-------:|
+| [cupertino_icons](https://pub.dev/packages/cupertino_icons)       |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+| [connectivity_plus](https://pub.dev/packages/connectivity_plus)   |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+| [get](https://pub.dev/packages/get)                               |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+| [lottie](https://pub.dev/packages/lottie)                         |   ✅    |   ✅   |       |   ✅   |       |   ✅    |
+| [animated_text_kit](https://pub.dev/packages/animated_text_kit)   |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+| [simple_gradient_text](https://pub.dev/packages/simple_gradient_text) |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+| [shared_preferences](https://pub.dev/packages/shared_preferences) |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+| [speech_to_text](https://pub.dev/packages/speech_to_text)         |   ✅    |   ✅   |       |   ✅   |   ✅   |         |
 
 
