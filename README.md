@@ -8,5 +8,19 @@ CAApp is a multiplatform application for **Augmentative Alternative Communicatio
 CAApp is structured on a Client-Server architecture, based on [RestAPI](https://it.wikipedia.org/wiki/Representational_state_transfer)
 - Backend available [here](https://github.com/olegbilovus/emad_restapi)
 - PECS generation algorithm available [here](https://github.com/olegbilovus/emad_images)
-- GenAI supplied by [Azure](https://azure.microsoft.com) 
+- GenAI supplied by [Azure](https://azure.microsoft.com)
+
+## Dependencies required
+|        | Android |  iOS  | Linux | macOS |  Web  | Windows |
+|-----------------------|:-------:|:-----:|:-----:|:-----:|:-----:|:-------:|
+| cupertino_icons       |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+| connectivity_plus     |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+| get                   |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+| lottie                |   ✅    |   ✅   |       |   ✅   |       |   ✅    |
+| animated_text_kit     |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+| simple_gradient_text  |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+| shared_preferences    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+| speech_to_text        |   ✅    |   ✅   |       |   ✅   |       |         |
+
+
 
