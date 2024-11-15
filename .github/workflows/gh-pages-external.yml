@@ -1,0 +1,49 @@
+name: gh-pages-external
+
+on:
+  push:
+    branches: [ main, gh-pages-external ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.7
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2.16.0
+        with:
+          cache: true
+          channel: stable
+
+      - name: Cache packages
+        uses: actions/cache@v4.0.2
+        with:
+          path: ${{ env.PUB_CACHE }}
+          key: deps-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: Restore packages
+        run: flutter pub get
+
+      - name: Creates web build
+        run: flutter build web --release
+
+      - name: Replace base href
+        run: sed -i 's\<base href="/">\<base href="./">\g' build/web/index.html
+
+      - name: Commit and push
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+          JIT_OWNER: ${{ secrets.JIT_OWNER }}
+          JIT_REPO: ${{ secrets.JIT_REPO }}
+        run: |
+          git clone https://$API_TOKEN_GITHUB@github.com/$JIT_OWNER/$JIT_REPO.git
+          cd $JIT_REPO
+          rm -rf *
+          mv ../build/web/* .
+          git config --global user.email "update[bot]@bots.noreply.github.com"
+          git config --global user.name "update[bot]"
+          git add .
+          git commit -am update || echo "no changes"
+          git push
