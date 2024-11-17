@@ -7,5 +7,6 @@
   "no_network": "Connessione Internet assente",
   "no_network_q": "Sei collegato alla rete?",
   "settings": "Impostazioni",
-  "welcome_back": "Bentornato"
+  "welcome_back": "Bentornato",
+    "sign_in_sign_up": "Accedi / Registrati"
 }

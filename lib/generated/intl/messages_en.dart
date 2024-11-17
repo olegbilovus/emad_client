@@ -31,6 +31,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "no_network_q": MessageLookupByLibrary.simpleMessage(
             "Are you connected to the network?"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "sign_in_sign_up":
+            MessageLookupByLibrary.simpleMessage("Sign in / Sign up"),
         "welcome_back": MessageLookupByLibrary.simpleMessage("Welcome back"),
         "welcome_msg":
             MessageLookupByLibrary.simpleMessage("Hi, what can I generate?")

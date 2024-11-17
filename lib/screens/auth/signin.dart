@@ -1,3 +1,4 @@
+import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/widget/custom_appbar_back.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,8 +16,8 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const CustomAppbarBack(
-          title: 'Sign In / Sign Up',
+        appBar: CustomAppbarBack(
+          title: context.loc.sign_in_sign_up,
         ),
         body: SignInScreen(
           actions: [

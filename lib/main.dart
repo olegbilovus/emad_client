@@ -1,4 +1,3 @@
-import 'package:emad_client/controller/image_generator_controller.dart';
 import 'package:emad_client/dependency_injection.dart';
 import 'package:emad_client/screens/auth/forgot_password.dart';
 import 'package:emad_client/screens/auth/signin.dart';
@@ -9,8 +8,10 @@ import 'package:emad_client/screens/settings.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 
 import 'firebase_options.dart';
@@ -38,7 +39,13 @@ class MyApp extends StatelessWidget {
         ColorScheme.fromSeed(seedColor: const Color(0xFF60A561));
     return GetMaterialApp(
       supportedLocales: AppLocalizations.supportedLocales,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        FirebaseUILocalizations.delegate,
+        AppLocalizations.delegate,
+      ],
       debugShowCheckedModeBanner: false,
 
       title: 'CAApp',
