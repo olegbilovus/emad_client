@@ -7,6 +7,7 @@ import 'package:emad_client/controller/history_controller.dart';
 import 'package:emad_client/controller/network_controller.dart';
 import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/widget/custom_appbar.dart';
+import 'package:emad_client/model/image_data.dart'; // Importa il modello ImageData
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -25,7 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final ImageGeneratorController _imageGeneratorController =
       ImageGeneratorController();
   bool _isListening = false;
-  List<String> generatedImageUrls = [];
+  List<ImageData> generatedImages = []; // Usa ImageData invece di URL
   bool isLoadingImages = false;
   bool violence = false;
   bool sex = false;
@@ -50,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       isLoadingImages = true;
-      generatedImageUrls = [];
+      generatedImages = [];
     });
 
     try {
@@ -60,10 +61,11 @@ class _MyHomePageState extends State<MyHomePage> {
         return;
       }
 
-      final urls = await _imageGeneratorController.generateImagesFromPrompt(
+      final images = await _imageGeneratorController.generateImagesFromPrompt(
           sex: sex, violence: violence, prompt: prompt, language: language);
+
       setState(() {
-        generatedImageUrls = urls;
+        generatedImages = images; // Aggiorna con la lista di ImageData
       });
 
       _historyController.addToHistory(prompt);
@@ -168,13 +170,62 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Contenitore delle immagini
+              // Contenitore delle immagini con il testo sopra
               Container(
+                alignment: Alignment.center,
+                margin: const EdgeInsets.symmetric(vertical: 10.0),
                 height:
-                    MediaQuery.of(context).size.height * 0.35, // Altezza fissa
-                alignment: Alignment.bottomCenter,
-                child: generatedImageUrls.isEmpty && !isLoadingImages
-                    ? SizedBox(
+                    MediaQuery.of(context).size.height * 0.60, // Altezza fissa
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Testo che mostra il numero di immagini generate
+                    SizedBox(
+                      width: double.infinity,
+                      height: 20,
+                    ),
+
+                    generatedImages.isNotEmpty
+                        ? SizedBox(
+                            width: 250.0,
+                            child: ShaderMask(
+                              shaderCallback: (bounds) => const LinearGradient(
+                                colors: [
+                                  Colors.black,
+                                  Color(0xFF60A561),
+                                  Color(0xFF60A561),
+                                  Color(0xFF305331),
+                                  Color(0xFF305331),
+                                ],
+                              ).createShader(bounds),
+                              blendMode: BlendMode.srcIn,
+                              child: Center(
+                                // Aggiungi Center per centrare il testo
+                                child: DefaultTextStyle(
+                                  style: const TextStyle(
+                                    fontSize: 20.0, // Dimensione più grande
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  child: AnimatedTextKit(
+                                    isRepeatingAnimation: false,
+                                    animatedTexts: [
+                                      TypewriterAnimatedText(
+                                        "Ho generato ${generatedImages.length} immagini",
+                                        speed:
+                                            const Duration(milliseconds: 150),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : const SizedBox(), // Se non ci sono immagini, non mostra nulla
+
+                    // Se le immagini sono in fase di caricamento o non ci sono immagini, mostriamo il messaggio di benvenuto
+                    if (generatedImages.isEmpty && !isLoadingImages)
+                      SizedBox(
                         width: 250.0,
                         child: ShaderMask(
                           shaderCallback: (bounds) => const LinearGradient(
@@ -193,46 +244,128 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: DefaultTextStyle(
                             style: const TextStyle(
                                 fontSize: 30.0, fontWeight: FontWeight.bold),
-                            child: AnimatedTextKit(
-                              isRepeatingAnimation: false,
-                              animatedTexts: [
-                                TypewriterAnimatedText(
-                                  context.loc.welcome_msg,
-                                  speed: const Duration(milliseconds: 200),
-                                ),
-                              ],
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 120),
+                              child: AnimatedTextKit(
+                                isRepeatingAnimation: false,
+                                animatedTexts: [
+                                  TypewriterAnimatedText(
+                                    context.loc.welcome_msg,
+                                    speed: const Duration(milliseconds: 200),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       )
-                    : SingleChildScrollView(
+                    // Mostriamo le immagini se sono state generate
+
+                    else
+                      SizedBox(
+                        width: double.infinity,
+                        height: 40,
+                      ),
+                    Expanded(
+                      child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          children: generatedImageUrls.map((url) {
+                          children: generatedImages.map((imageData) {
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Image.network(
-                                url,
-                                width: 150,
-                                height: 150,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    width: 150,
-                                    height: 150,
-                                    color: Colors.grey,
-                                    child: const Icon(Icons.broken_image),
-                                  );
-                                },
+                              child: Column(
+                                children: [
+                                  // Mostra la keyword sopra l'immagine
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    child: Text(
+                                      imageData.keyword.toUpperCase(),
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  // Mostra l'immagine
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(
+                                          0xffeff6ef), // Colore di sfondo
+                                      borderRadius: BorderRadius.circular(
+                                          15.0), // Raggio degli angoli smussati
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 20.0,
+                                            bottom: 20.0,
+                                            right: 10.0,
+                                            left: 10.0),
+                                        child: Image.network(
+                                          imageData.url,
+                                          width: 200,
+                                          height: 220,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Container(
+                                              width: 150,
+                                              height: 150,
+                                              color: Colors.grey,
+                                              child: const Icon(
+                                                  Icons.broken_image),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height:
+                                        10, // Distanza tra l'immagine e le icone
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      // Icona a sinistra
+                                      IconButton(
+                                          onPressed: () {
+                                            // Azione per l'icona sinistra
+                                          },
+                                          icon: Image.asset(
+                                            "assets/icons/art-and-design.png",
+                                            height: 20,
+                                            width: 20,
+                                          )),
+                                      // Icona a destra
+                                      IconButton(
+                                        onPressed: () {
+                                          // Azione per l'icona destra
+                                        },
+                                        icon: const Icon(
+                                            Icons.upload_file_rounded,
+                                            color: const Color(
+                                                0xFF60A561) // Scelta del colore
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             );
                           }).toList(),
                         ),
                       ),
+                    ),
+                  ],
+                ),
               ),
 
               // Campo di input
-              const SizedBox(height: 240.0),
+              const SizedBox(height: 30.0),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
                 child: TextField(
