@@ -11,6 +11,7 @@ dependencies:
   intl: ^0.19.0
   flutter_localizations:
     sdk: flutter
+  firebase_ui_localizations: ^1.13.0
 
   cupertino_icons: ^1.0.8
   connectivity_plus: ^6.1.0
