@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:emad_client/controller/history_controller.dart';
-import 'package:emad_client/extensions/buildcontext/loc.dart';
-import 'package:emad_client/widget/custom_appbar.dart';
-import 'package:emad_client/controller/network_controller.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:emad_client/controller/image_generator_controller.dart';
+import 'package:emad_client/controller/history_controller.dart';
+import 'package:emad_client/controller/network_controller.dart';
+import 'package:emad_client/extensions/buildcontext/loc.dart';
+import 'package:emad_client/widget/custom_appbar.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -21,13 +22,62 @@ class _MyHomePageState extends State<MyHomePage> {
   final HistoryController _historyController = HistoryController();
   final NetworkController _networkController = NetworkController();
   final SpeechToText _speechToText = SpeechToText();
+  final ImageGeneratorController _imageGeneratorController =
+      ImageGeneratorController();
   bool _isListening = false;
+  List<String> generatedImageUrls = [];
+  bool isLoadingImages = false;
+  //poi queste variabili verranno aggiornate con SharedPreferences
+  bool violence = false;
+  bool sex = false;
+  String language = "it";
+  //
 
   @override
   void initState() {
     super.initState();
     _speechToText.initialize();
     _historyController.init();
+  }
+
+  Future<void> _generateImages() async {
+    final prompt = _textEditingController.text;
+    if (prompt.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text("Inserisci un testo per generare immagini")),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoadingImages = true;
+      generatedImageUrls = [];
+    });
+
+    try {
+      bool status = await _networkController.checkConnection();
+      if (!status) {
+        Get.toNamed('/no_connection');
+        return;
+      }
+
+      final urls = await _imageGeneratorController.generateImagesFromPrompt(
+          sex: sex, violence: violence, prompt: prompt, language: language);
+      setState(() {
+        generatedImageUrls = urls;
+      });
+
+      _historyController.addToHistory(prompt);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Errore nella generazione delle immagini: $e")),
+      );
+    } finally {
+      setState(() {
+        isLoadingImages = false;
+      });
+    }
   }
 
   void _showCustomModalBottomSheet() {
@@ -62,7 +112,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Lista della cronologia
                 if (history.isNotEmpty)
                   Expanded(
                     child: SingleChildScrollView(
@@ -99,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   )
                 else
-                   Text(
+                  Text(
                     context.loc.no_history,
                     style: const TextStyle(fontSize: 16, color: Colors.grey),
                   ),
@@ -121,41 +170,69 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.35,
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: 250.0,
-                  child: ShaderMask(
-                    shaderCallback: (bounds) => const LinearGradient(
-                      colors: [
-                        Colors.black,
-                        Color(0xFF60A561),
-                        Color(0xFF60A561),
-                        Color(0xFF60A561),
-                        Color(0xFF305331),
-                        Color(0xFF305331),
-                        Color(0xFF305331),
-                        Colors.black,
-                      ],
-                    ).createShader(bounds),
-                    blendMode: BlendMode.srcIn,
-                    child: DefaultTextStyle(
-                      style: const TextStyle(
-                          fontSize: 30.0, fontWeight: FontWeight.bold),
-                      child: AnimatedTextKit(
-                        isRepeatingAnimation: false,
-                        animatedTexts: [
-                          TypewriterAnimatedText(
-                            context.loc.welcome_msg,
-                            speed: const Duration(milliseconds: 200),
-                          ),
+              if (isLoadingImages)
+                const Center(child: CircularProgressIndicator())
+              else if (generatedImageUrls.isNotEmpty)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: generatedImageUrls.map((url) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.network(
+                          url,
+                          width: 150,
+                          height: 150,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 150,
+                              height: 150,
+                              color: Colors.grey,
+                              child: const Icon(Icons.broken_image),
+                            );
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                )
+              else
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                    width: 250.0,
+                    child: ShaderMask(
+                      shaderCallback: (bounds) => const LinearGradient(
+                        colors: [
+                          Colors.black,
+                          Color(0xFF60A561),
+                          Color(0xFF60A561),
+                          Color(0xFF60A561),
+                          Color(0xFF305331),
+                          Color(0xFF305331),
+                          Color(0xFF305331),
+                          Colors.black,
                         ],
+                      ).createShader(bounds),
+                      blendMode: BlendMode.srcIn,
+                      child: DefaultTextStyle(
+                        style: const TextStyle(
+                            fontSize: 30.0, fontWeight: FontWeight.bold),
+                        child: AnimatedTextKit(
+                          isRepeatingAnimation: false,
+                          animatedTexts: [
+                            TypewriterAnimatedText(
+                              context.loc.welcome_msg,
+                              speed: const Duration(milliseconds: 200),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
               const SizedBox(height: 240.0),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
@@ -164,59 +241,36 @@ class _MyHomePageState extends State<MyHomePage> {
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
                   decoration: InputDecoration(
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: GestureDetector(
-                        onLongPress: () async {
-                          //attiva il "text to speech"
-                          if (!_isListening) {
-                            bool available = await _speechToText.initialize();
-                            if (available) {
-                              setState(() => _isListening = true);
-                              _speechToText.listen(onResult: (result) {
-                                setState(() {
-                                  _textEditingController.text =
-                                      result.recognizedWords;
-                                });
+                    prefixIcon: GestureDetector(
+                      onLongPress: () async {
+                        if (!_isListening) {
+                          bool available = await _speechToText.initialize();
+                          if (available) {
+                            setState(() => _isListening = true);
+                            _speechToText.listen(onResult: (result) {
+                              setState(() {
+                                _textEditingController.text =
+                                    result.recognizedWords;
                               });
-                            }
+                            });
                           }
-                        },
-                        onLongPressUp: () {
-                          //quando rilasci il dito dal microfono si spegne i riconoscimento vocale
-                          if (_isListening) {
-                            _speechToText.stop();
-                            setState(() => _isListening = false);
-                          }
-                        },
-                        child: Icon(
-                          Icons.mic,
-                          color: _isListening
-                              ? Colors.red
-                              : const Color(0xFF60A561),
-                        ),
+                        }
+                      },
+                      onLongPressUp: () {
+                        if (_isListening) {
+                          _speechToText.stop();
+                          setState(() => _isListening = false);
+                        }
+                      },
+                      child: Icon(
+                        Icons.mic,
+                        color:
+                            _isListening ? Colors.red : const Color(0xFF60A561),
                       ),
                     ),
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: IconButton(
-                        onPressed: () async {
-                          //ottiene la cronologia
-                          _historyController.getHistory();
-                          //aggiunge la frase alla cronologia
-                          _historyController
-                              .addToHistory(_textEditingController.text);
-
-                          //controllo sulla connessione
-                          bool status =
-                              await _networkController.checkConnection();
-                          if (status == false) {
-                            print("Stato connessione: $status");
-                            Get.toNamed('/no_connection');
-                          }
-                        },
-                        icon: const Icon(Icons.send, color: Color(0xFF60A561)),
-                      ),
+                    suffixIcon: IconButton(
+                      onPressed: _generateImages,
+                      icon: const Icon(Icons.send, color: Color(0xFF60A561)),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
