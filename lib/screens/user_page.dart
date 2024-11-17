@@ -1,3 +1,4 @@
+import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/widget/custom_appbar_back.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarBack(title: "Bentornato $_nomeUtente"),
+      appBar: CustomAppbarBack(title: "${context.loc.welcome_back} $_nomeUtente"),
       body: Column(),
     );
   }

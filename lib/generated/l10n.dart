@@ -80,6 +80,16 @@ class S {
     );
   }
 
+  /// `No items in history`
+  String get no_history {
+    return Intl.message(
+      'No items in history',
+      name: 'no_history',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No Internet connection`
   String get no_network {
     return Intl.message(
@@ -105,6 +115,16 @@ class S {
     return Intl.message(
       'Settings',
       name: 'settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome back`
+  String get welcome_back {
+    return Intl.message(
+      'Welcome back',
+      name: 'welcome_back',
       desc: '',
       args: [],
     );

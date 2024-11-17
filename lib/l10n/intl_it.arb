@@ -3,7 +3,9 @@
   "app_title": "CAApp",
   "welcome_msg": "Ciao, cosa posso generare?",
   "history": "Cronologia",
+  "no_history": "Nessun elemento nella cronologia",
   "no_network": "Connessione Internet assente",
   "no_network_q": "Sei collegato alla rete?",
-  "settings": "Impostazioni"
+  "settings": "Impostazioni",
+  "welcome_back": "Bentornato"
 }
