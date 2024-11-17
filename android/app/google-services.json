@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "569675897050",
+    "project_id": "emad-caapp",
+    "storage_bucket": "emad-caapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:569675897050:android:32dd0496a0465b29d6ede3",
+        "android_client_info": {
+          "package_name": "com.example.emad_client"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5xHC-K3_LAkdeYDvS7xhbZumXOWp-VMk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
