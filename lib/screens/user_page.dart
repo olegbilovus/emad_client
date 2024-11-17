@@ -10,7 +10,7 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  String _nomeUtente = "";
+  final String _nomeUtente = "";
 
   @override
   void initState() {
@@ -22,7 +22,7 @@ class _UserPageState extends State<UserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppbarBack(title: "${context.loc.welcome_back} $_nomeUtente"),
-      body: Column(),
+      body: const Column(),
     );
   }
 }
