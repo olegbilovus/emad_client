@@ -1,13 +1,29 @@
 import 'package:emad_client/dependency_injection.dart';
+import 'package:emad_client/screens/auth/forgot_password.dart';
+import 'package:emad_client/screens/auth/signin.dart';
+import 'package:emad_client/screens/auth/user_page.dart';
 import 'package:emad_client/screens/my_home_page.dart';
 import 'package:emad_client/screens/no_connection.dart';
 import 'package:emad_client/screens/settings.dart';
-import 'package:emad_client/screens/user_page.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  FirebaseUIAuth.configureProviders([
+    EmailAuthProvider(),
+  ]);
+
   runApp(const MyApp());
   DependencyInjection.init();
 }
@@ -45,6 +61,16 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/no_connection',
           page: () => const NoConnection(),
+        ),
+        GetPage(
+          name: '/sign_in',
+          page: () => FirebaseAuth.instance.currentUser == null
+              ? const SignIn()
+              : const UserPage(),
+        ),
+        GetPage(
+          name: '/forgot_password',
+          page: () => const ForgotPassword(),
         ),
         GetPage(
           name: '/user_page',
