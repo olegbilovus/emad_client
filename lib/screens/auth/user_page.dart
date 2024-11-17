@@ -52,7 +52,12 @@ class _UserPageState extends State<UserPage> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Get.toNamed('/');
+            bool fromSignIn = Get.previousRoute == '/sign_in';
+            if (fromSignIn) {
+              Get.toNamed('/');
+            } else {
+              Get.back();
+            }
           },
           icon: const Icon(
             Icons.arrow_back_ios,
