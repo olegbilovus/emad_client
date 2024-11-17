@@ -13,9 +13,7 @@ class SharedPreferencesSingleton {
   static SharedPreferences? _prefs;
 
   Future<void> init() async {
-    if (_prefs == null) {
-      _prefs = await SharedPreferences.getInstance();
-    }
+    _prefs ??= await SharedPreferences.getInstance();
   }
 
   // Salva una stringa

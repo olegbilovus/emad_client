@@ -24,11 +24,14 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "app_title": MessageLookupByLibrary.simpleMessage("CAApp"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
+        "no_history":
+            MessageLookupByLibrary.simpleMessage("No items in history"),
         "no_network":
             MessageLookupByLibrary.simpleMessage("No Internet connection"),
         "no_network_q": MessageLookupByLibrary.simpleMessage(
             "Are you connected to the network?"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "welcome_back": MessageLookupByLibrary.simpleMessage("Welcome back"),
         "welcome_msg":
             MessageLookupByLibrary.simpleMessage("Hi, what can I generate?")
       };

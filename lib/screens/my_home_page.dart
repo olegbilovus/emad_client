@@ -99,9 +99,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   )
                 else
-                  const Text(
-                    "Nessuna cronologia disponibile",
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                   Text(
+                    context.loc.no_history,
+                    style: const TextStyle(fontSize: 16, color: Colors.grey),
                   ),
               ],
             ),
