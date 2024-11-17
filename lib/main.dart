@@ -1,3 +1,4 @@
+import 'package:emad_client/controller/image_generator_controller.dart';
 import 'package:emad_client/dependency_injection.dart';
 import 'package:emad_client/screens/my_home_page.dart';
 import 'package:emad_client/screens/no_connection.dart';
