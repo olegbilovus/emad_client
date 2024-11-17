@@ -27,11 +27,9 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isListening = false;
   List<String> generatedImageUrls = [];
   bool isLoadingImages = false;
-  //poi queste variabili verranno aggiornate con SharedPreferences
   bool violence = false;
   bool sex = false;
   String language = "it";
-  //
 
   @override
   void initState() {
@@ -170,69 +168,70 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if (isLoadingImages)
-                const Center(child: CircularProgressIndicator())
-              else if (generatedImageUrls.isNotEmpty)
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: generatedImageUrls.map((url) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.network(
-                          url,
-                          width: 150,
-                          height: 150,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              width: 150,
-                              height: 150,
-                              color: Colors.grey,
-                              child: const Icon(Icons.broken_image),
-                            );
-                          },
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                )
-              else
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.35,
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: 250.0,
-                    child: ShaderMask(
-                      shaderCallback: (bounds) => const LinearGradient(
-                        colors: [
-                          Colors.black,
-                          Color(0xFF60A561),
-                          Color(0xFF60A561),
-                          Color(0xFF60A561),
-                          Color(0xFF305331),
-                          Color(0xFF305331),
-                          Color(0xFF305331),
-                          Colors.black,
-                        ],
-                      ).createShader(bounds),
-                      blendMode: BlendMode.srcIn,
-                      child: DefaultTextStyle(
-                        style: const TextStyle(
-                            fontSize: 30.0, fontWeight: FontWeight.bold),
-                        child: AnimatedTextKit(
-                          isRepeatingAnimation: false,
-                          animatedTexts: [
-                            TypewriterAnimatedText(
-                              context.loc.welcome_msg,
-                              speed: const Duration(milliseconds: 200),
+              // Contenitore delle immagini
+              Container(
+                height:
+                    MediaQuery.of(context).size.height * 0.35, // Altezza fissa
+                alignment: Alignment.bottomCenter,
+                child: generatedImageUrls.isEmpty && !isLoadingImages
+                    ? SizedBox(
+                        width: 250.0,
+                        child: ShaderMask(
+                          shaderCallback: (bounds) => const LinearGradient(
+                            colors: [
+                              Colors.black,
+                              Color(0xFF60A561),
+                              Color(0xFF60A561),
+                              Color(0xFF60A561),
+                              Color(0xFF305331),
+                              Color(0xFF305331),
+                              Color(0xFF305331),
+                              Colors.black,
+                            ],
+                          ).createShader(bounds),
+                          blendMode: BlendMode.srcIn,
+                          child: DefaultTextStyle(
+                            style: const TextStyle(
+                                fontSize: 30.0, fontWeight: FontWeight.bold),
+                            child: AnimatedTextKit(
+                              isRepeatingAnimation: false,
+                              animatedTexts: [
+                                TypewriterAnimatedText(
+                                  context.loc.welcome_msg,
+                                  speed: const Duration(milliseconds: 200),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
+                        ),
+                      )
+                    : SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: generatedImageUrls.map((url) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.network(
+                                url,
+                                width: 150,
+                                height: 150,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: 150,
+                                    height: 150,
+                                    color: Colors.grey,
+                                    child: const Icon(Icons.broken_image),
+                                  );
+                                },
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
-                    ),
-                  ),
-                ),
+              ),
+
+              // Campo di input
               const SizedBox(height: 240.0),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
@@ -269,7 +268,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     suffixIcon: IconButton(
-                      onPressed: _generateImages,
+                      onPressed: () {
+                        // Rimuove il focus dal TextField e chiude la tastiera
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        _generateImages();
+                      },
                       icon: const Icon(Icons.send, color: Color(0xFF60A561)),
                     ),
                     border: OutlineInputBorder(
@@ -280,6 +283,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               const SizedBox(height: 8.0),
+
+              // Storia
               Column(
                 children: [
                   Row(
