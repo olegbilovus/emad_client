@@ -52,7 +52,7 @@ class _UserPageState extends State<UserPage> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Get.back();
+            Get.toNamed('/');
           },
           icon: const Icon(
             Icons.arrow_back_ios,
