@@ -23,9 +23,14 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "app_title": MessageLookupByLibrary.simpleMessage("CAApp"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "dialog_delete_content": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to delete?"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
         "no_history":
             MessageLookupByLibrary.simpleMessage("No items in history"),
+        "no_images": MessageLookupByLibrary.simpleMessage("No images found"),
         "no_network":
             MessageLookupByLibrary.simpleMessage("No Internet connection"),
         "no_network_q": MessageLookupByLibrary.simpleMessage(

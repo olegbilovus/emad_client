@@ -139,6 +139,46 @@ class S {
       args: [],
     );
   }
+
+  /// `No images found`
+  String get no_images {
+    return Intl.message(
+      'No images found',
+      name: 'no_images',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get delete {
+    return Intl.message(
+      'Delete',
+      name: 'delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete?`
+  String get dialog_delete_content {
+    return Intl.message(
+      'Are you sure you want to delete?',
+      name: 'dialog_delete_content',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

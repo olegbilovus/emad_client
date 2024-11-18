@@ -10,7 +10,7 @@ import 'package:emad_client/widget/custom_appbar.dart';
 import 'package:emad_client/model/image_data.dart'; // Importa il modello ImageData
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
