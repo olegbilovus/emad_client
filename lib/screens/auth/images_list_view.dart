@@ -27,26 +27,28 @@ class ImagesListView extends StatelessWidget {
         final image = images.elementAt(index);
         return Container(
           decoration: BoxDecoration(
-            color: const Color(0xffeff6ef),
-            borderRadius: BorderRadius.circular(15.0),
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(10),
           ),
-          child: Column(
-            children: [
-              Expanded(
-                child: Image.memory(
-                  base64Decode(image.base64),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              ListTile(
-                title: Text(
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Column(
+              children: [
+                Text(
                   textAlign: TextAlign.center,
                   image.keyword,
                   maxLines: 1,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                trailing: IconButton(
+                Expanded(
+                  child: Image.memory(
+                    base64Decode(image.base64),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                IconButton(
                   onPressed: () async {
                     final shouldDelete = await showDeleteDialog(context);
                     if (shouldDelete) {
@@ -55,8 +57,8 @@ class ImagesListView extends StatelessWidget {
                   },
                   icon: const Icon(Icons.delete_forever),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
