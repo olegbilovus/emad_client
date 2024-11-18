@@ -80,6 +80,41 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> _generateImagesFromHistory(int index) async {
+    //prendi il testo dalla cronologia
+    final prompt = _historyController.getHistory().elementAt(index);
+
+    setState(() {
+      isLoadingImages = true;
+      generatedImages = [];
+    });
+
+    try {
+      bool status = await _networkController.checkConnection();
+      if (!status) {
+        Get.toNamed('/no_connection');
+        return;
+      }
+
+      final images = await _imageGeneratorController.generateImagesFromPrompt(
+          sex: sex, violence: violence, prompt: prompt, language: language);
+
+      setState(() {
+        generatedImages = images; // Aggiorna con la lista di ImageData
+      });
+
+      _historyController.addToHistory(prompt);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Errore nella generazione delle immagini: $e")),
+      );
+    } finally {
+      setState(() {
+        isLoadingImages = false;
+      });
+    }
+  }
+
   void _showCustomModalBottomSheet() {
     final history = _historyController.getHistory();
 
@@ -119,27 +154,33 @@ class _MyHomePageState extends State<MyHomePage> {
                         spacing: 10.0,
                         runSpacing: 10.0,
                         children: List.generate(history.length, (index) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.green.shade100,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.2),
-                                  spreadRadius: 1,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 2),
+                          return GestureDetector(
+                            onTap: () {
+                              _generateImagesFromHistory(index);
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade100,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Text(
+                                history.elementAt(index),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
                                 ),
-                              ],
-                            ),
-                            child: Text(
-                              history.elementAt(index),
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
                               ),
                             ),
                           );
@@ -260,7 +301,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       )
                     // Mostriamo le immagini se sono state generate
-
                     else
                       SizedBox(
                         width: double.infinity,
@@ -417,7 +457,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 8.0),
 
-              // Storia
               Column(
                 children: [
                   Row(
