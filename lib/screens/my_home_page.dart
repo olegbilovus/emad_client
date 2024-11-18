@@ -1,17 +1,14 @@
-import 'dart:convert';
-import 'dart:developer' as dev;
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:get/get.dart';
-import 'package:speech_to_text/speech_to_text.dart';
-import 'package:emad_client/controller/image_generator_controller.dart';
 import 'package:emad_client/controller/history_controller.dart';
+import 'package:emad_client/controller/image_generator_controller.dart';
 import 'package:emad_client/controller/network_controller.dart';
 import 'package:emad_client/extensions/buildcontext/loc.dart';
-import 'package:emad_client/widget/custom_appbar.dart';
 import 'package:emad_client/model/image_data.dart';
+import 'package:emad_client/screens/image_keyword.dart';
+import 'package:emad_client/widget/custom_appbar.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 import '../services/cloud/firebase_cloud_storage.dart'; // Importa il modello ImageData
 
@@ -122,39 +119,6 @@ class _MyHomePageState extends State<MyHomePage> {
         isLoadingImages = false;
       });
     }
-  }
-
-  Future<Image> _setCorrectImage(ImageData imageData) async {
-    if (FirebaseAuth.instance.currentUser != null) {
-      try {
-        final image = await _imagesService.getImageByKeyword(
-            userId: FirebaseAuth.instance.currentUser!.uid,
-            keyword: imageData.keyword);
-
-        return Image.memory(
-          base64Decode(image.base64),
-          fit: BoxFit.cover,
-        );
-      } catch (_) {
-        dev.log(
-            "User did not uploaded an image for the keyword: ${imageData.keyword}");
-      }
-    }
-
-    return Image.network(
-      imageData.url,
-      width: 200,
-      height: 220,
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
-        return Container(
-          width: 150,
-          height: 150,
-          color: Colors.grey,
-          child: const Icon(Icons.broken_image),
-        );
-      },
-    );
   }
 
   void _showCustomModalBottomSheet() {
@@ -386,21 +350,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                             bottom: 20.0,
                                             right: 10.0,
                                             left: 10.0),
-                                        child: Image.network(
-                                          imageData.url,
-                                          width: 200,
-                                          height: 220,
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Container(
-                                              width: 150,
-                                              height: 150,
-                                              color: Colors.grey,
-                                              child: const Icon(
-                                                  Icons.broken_image),
-                                            );
-                                          },
+                                        child: ImageKeyword(
+                                          imageData: imageData,
+                                          imagesService: _imagesService,
                                         ),
                                       ),
                                     ),
