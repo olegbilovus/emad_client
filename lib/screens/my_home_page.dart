@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:developer' as dev;
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:get/get.dart';
@@ -7,7 +11,9 @@ import 'package:emad_client/controller/history_controller.dart';
 import 'package:emad_client/controller/network_controller.dart';
 import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/widget/custom_appbar.dart';
-import 'package:emad_client/model/image_data.dart'; // Importa il modello ImageData
+import 'package:emad_client/model/image_data.dart';
+
+import '../services/cloud/firebase_cloud_storage.dart'; // Importa il modello ImageData
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -19,6 +25,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late final FirebaseCloudStorage _imagesService;
+
   final TextEditingController _textEditingController = TextEditingController();
   final HistoryController _historyController = HistoryController();
   final NetworkController _networkController = NetworkController();
@@ -35,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    _imagesService = FirebaseCloudStorage();
     _speechToText.initialize();
     _historyController.init();
   }
@@ -113,6 +122,39 @@ class _MyHomePageState extends State<MyHomePage> {
         isLoadingImages = false;
       });
     }
+  }
+
+  Future<Image> _setCorrectImage(ImageData imageData) async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      try {
+        final image = await _imagesService.getImageByKeyword(
+            userId: FirebaseAuth.instance.currentUser!.uid,
+            keyword: imageData.keyword);
+
+        return Image.memory(
+          base64Decode(image.base64),
+          fit: BoxFit.cover,
+        );
+      } catch (_) {
+        dev.log(
+            "User did not uploaded an image for the keyword: ${imageData.keyword}");
+      }
+    }
+
+    return Image.network(
+      imageData.url,
+      width: 200,
+      height: 220,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: 150,
+          height: 150,
+          color: Colors.grey,
+          child: const Icon(Icons.broken_image),
+        );
+      },
+    );
   }
 
   void _showCustomModalBottomSheet() {
@@ -262,7 +304,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                           )
-                        : const SizedBox(), // Se non ci sono immagini, non mostra nulla
+                        : const SizedBox(),
+                    // Se non ci sono immagini, non mostra nulla
 
                     // Se le immagini sono in fase di caricamento o non ci sono immagini, mostriamo il messaggio di benvenuto
                     if (generatedImages.isEmpty && !isLoadingImages)

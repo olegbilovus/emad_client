@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/services/cloud/dto.dart';
+import 'package:emad_client/widget/dialogs/logout_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -79,8 +80,11 @@ class _UserPageState extends State<UserPage> {
         actions: [
           IconButton(
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Get.toNamed('/');
+              final shouldLogout = await showLogoutDialog(context);
+              if (shouldLogout) {
+                await FirebaseAuth.instance.signOut();
+                Get.toNamed('/');
+              }
             },
             icon: const Icon(
               Icons.exit_to_app,

@@ -12,5 +12,7 @@
   "no_images": "No images found",
   "delete": "Delete",
   "cancel": "Cancel",
-  "dialog_delete_content": "Are you sure you want to delete?"
+  "delete_content": "Are you sure you want to delete?",
+  "logout": "Logout",
+  "logout_content": "Are you sure you want to logout?"
 }

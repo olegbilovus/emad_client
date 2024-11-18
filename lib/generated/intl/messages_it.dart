@@ -25,9 +25,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "app_title": MessageLookupByLibrary.simpleMessage("CAApp"),
         "cancel": MessageLookupByLibrary.simpleMessage("Annulla"),
         "delete": MessageLookupByLibrary.simpleMessage("Elimina"),
-        "dialog_delete_content": MessageLookupByLibrary.simpleMessage(
+        "delete_content": MessageLookupByLibrary.simpleMessage(
             "Sei sicuro di voler eliminare?"),
         "history": MessageLookupByLibrary.simpleMessage("Cronologia"),
+        "logout": MessageLookupByLibrary.simpleMessage("Esci"),
+        "logout_content":
+            MessageLookupByLibrary.simpleMessage("Sei sicuro di voler uscire?"),
         "no_history": MessageLookupByLibrary.simpleMessage(
             "Nessun elemento nella cronologia"),
         "no_images":

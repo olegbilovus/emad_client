@@ -25,9 +25,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "app_title": MessageLookupByLibrary.simpleMessage("CAApp"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
-        "dialog_delete_content": MessageLookupByLibrary.simpleMessage(
+        "delete_content": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to delete?"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
+        "logout": MessageLookupByLibrary.simpleMessage("Logout"),
+        "logout_content": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to logout?"),
         "no_history":
             MessageLookupByLibrary.simpleMessage("No items in history"),
         "no_images": MessageLookupByLibrary.simpleMessage("No images found"),

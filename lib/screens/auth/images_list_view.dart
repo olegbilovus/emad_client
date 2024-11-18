@@ -27,8 +27,8 @@ class ImagesListView extends StatelessWidget {
         final image = images.elementAt(index);
         return Container(
           decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(10),
+            color: const Color(0xffeff6ef),
+            borderRadius: BorderRadius.circular(15.0),
           ),
           child: Column(
             children: [

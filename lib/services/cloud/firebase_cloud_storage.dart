@@ -33,6 +33,23 @@ class FirebaseCloudStorage {
     );
   }
 
+  Future<CloudImage> getImageByKeyword(
+      {required String userId, required String keyword}) async {
+    final fetchedImages = images
+        .where(userIdField, isEqualTo: userId)
+        .where(keywordField, isEqualTo: keyword)
+        .snapshots();
+    if (await fetchedImages.isEmpty) {
+      throw CouldNotFindImageException();
+    }
+
+    final imageDocs = (await fetchedImages.first)
+        .docs
+        .map((doc) => CloudImage.fromSnapshot(doc));
+
+    return imageDocs.first;
+  }
+
   Future<void> deleteImage({required String imageId}) async {
     try {
       await images.doc(imageId).delete();

@@ -171,10 +171,30 @@ class S {
   }
 
   /// `Are you sure you want to delete?`
-  String get dialog_delete_content {
+  String get delete_content {
     return Intl.message(
       'Are you sure you want to delete?',
-      name: 'dialog_delete_content',
+      name: 'delete_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logout`
+  String get logout {
+    return Intl.message(
+      'Logout',
+      name: 'logout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to logout?`
+  String get logout_content {
+    return Intl.message(
+      'Are you sure you want to logout?',
+      name: 'logout_content',
       desc: '',
       args: [],
     );

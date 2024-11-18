@@ -12,5 +12,7 @@
   "no_images": "Nessuna immagine trovata",
   "delete": "Elimina",
   "cancel": "Annulla",
-  "dialog_delete_content": "Sei sicuro di voler eliminare?"
+  "delete_content": "Sei sicuro di voler eliminare?",
+  "logout": "Esci",
+  "logout_content": "Sei sicuro di voler uscire?"
 }
