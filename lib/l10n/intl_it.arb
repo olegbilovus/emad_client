@@ -8,5 +8,11 @@
   "no_network_q": "Sei collegato alla rete?",
   "settings": "Impostazioni",
   "welcome_back": "Bentornato",
-    "sign_in_sign_up": "Accedi / Registrati"
+  "sign_in_sign_up": "Accedi / Registrati",
+  "no_images": "Nessuna immagine trovata",
+  "delete": "Elimina",
+  "cancel": "Annulla",
+  "delete_content": "Sei sicuro di voler eliminare?",
+  "logout": "Esci",
+  "logout_content": "Sei sicuro di voler uscire?"
 }

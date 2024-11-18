@@ -23,9 +23,18 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "app_title": MessageLookupByLibrary.simpleMessage("CAApp"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Annulla"),
+        "delete": MessageLookupByLibrary.simpleMessage("Elimina"),
+        "delete_content": MessageLookupByLibrary.simpleMessage(
+            "Sei sicuro di voler eliminare?"),
         "history": MessageLookupByLibrary.simpleMessage("Cronologia"),
+        "logout": MessageLookupByLibrary.simpleMessage("Esci"),
+        "logout_content":
+            MessageLookupByLibrary.simpleMessage("Sei sicuro di voler uscire?"),
         "no_history": MessageLookupByLibrary.simpleMessage(
             "Nessun elemento nella cronologia"),
+        "no_images":
+            MessageLookupByLibrary.simpleMessage("Nessuna immagine trovata"),
         "no_network": MessageLookupByLibrary.simpleMessage(
             "Connessione Internet assente"),
         "no_network_q":

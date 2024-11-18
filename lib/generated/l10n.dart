@@ -139,6 +139,66 @@ class S {
       args: [],
     );
   }
+
+  /// `No images found`
+  String get no_images {
+    return Intl.message(
+      'No images found',
+      name: 'no_images',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get delete {
+    return Intl.message(
+      'Delete',
+      name: 'delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete?`
+  String get delete_content {
+    return Intl.message(
+      'Are you sure you want to delete?',
+      name: 'delete_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logout`
+  String get logout {
+    return Intl.message(
+      'Logout',
+      name: 'logout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to logout?`
+  String get logout_content {
+    return Intl.message(
+      'Are you sure you want to logout?',
+      name: 'logout_content',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

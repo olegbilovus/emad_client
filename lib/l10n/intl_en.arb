@@ -3,10 +3,16 @@
   "app_title": "CAApp",
   "welcome_msg": "Hi, what can I generate?",
   "history": "History",
-    "no_history": "No items in history",
+  "no_history": "No items in history",
   "no_network": "No Internet connection",
   "no_network_q": "Are you connected to the network?",
   "settings": "Settings",
   "welcome_back": "Welcome back",
-  "sign_in_sign_up": "Sign in / Sign up"
+  "sign_in_sign_up": "Sign in / Sign up",
+  "no_images": "No images found",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "delete_content": "Are you sure you want to delete?",
+  "logout": "Logout",
+  "logout_content": "Are you sure you want to logout?"
 }

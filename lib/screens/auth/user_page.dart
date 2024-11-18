@@ -1,10 +1,15 @@
 import 'dart:async';
 
 import 'package:emad_client/extensions/buildcontext/loc.dart';
+import 'package:emad_client/services/cloud/dto.dart';
+import 'package:emad_client/widget/dialogs/logout_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
+
+import '../../services/cloud/firebase_cloud_storage.dart';
+import 'images_list_view.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({super.key});
@@ -16,6 +21,8 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   late StreamSubscription<User?> _userSubscription;
   late User _user;
+
+  late final FirebaseCloudStorage _imagesService;
 
   @override
   void initState() {
@@ -38,6 +45,8 @@ class _UserPageState extends State<UserPage> {
         }
       }
     });
+
+    _imagesService = FirebaseCloudStorage();
   }
 
   @override
@@ -71,8 +80,11 @@ class _UserPageState extends State<UserPage> {
         actions: [
           IconButton(
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Get.toNamed('/');
+              final shouldLogout = await showLogoutDialog(context);
+              if (shouldLogout) {
+                await FirebaseAuth.instance.signOut();
+                Get.toNamed('/');
+              }
             },
             icon: const Icon(
               Icons.exit_to_app,
@@ -81,21 +93,29 @@ class _UserPageState extends State<UserPage> {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "User Info",
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            Text(
-              "Email: ${_user.email}\n"
-              "Id: ${_user.uid}\n"
-              "DisplayName: ${_user.displayName}",
-            ),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: StreamBuilder(
+          stream: _imagesService.allImages(userId: _user.uid),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+              case ConnectionState.active:
+                if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  final allImages = snapshot.data as Iterable<CloudImage>;
+                  return ImagesListView(
+                    images: allImages,
+                    onDeleteImage: (image) async {
+                      await _imagesService.deleteImage(imageId: image.imageId);
+                    },
+                  );
+                }
+                return Center(child: Text(context.loc.no_images));
+              default:
+                return const Scaffold(
+                    body: Center(child: CircularProgressIndicator()));
+            }
+          },
         ),
       ),
     );
