@@ -35,8 +35,12 @@ class ImageKeyword extends StatelessWidget {
             userId: FirebaseAuth.instance.currentUser!.uid,
             keyword: imageData.keyword);
 
-        return Image.memory(base64Decode(image.base64),
-            width: 200, height: 220, fit: BoxFit.contain);
+        return Image.memory(
+          base64Decode(image.base64),
+          width: 200,
+          height: 220,
+          fit: BoxFit.contain,
+        );
       } catch (_) {
         dev.log(
             "User did not uploaded an image for the keyword: ${imageData.keyword}");
