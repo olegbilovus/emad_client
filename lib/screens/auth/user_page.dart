@@ -100,6 +100,8 @@ class _UserPageState extends State<UserPage> {
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
+                return const Scaffold(
+                    body: Center(child: CircularProgressIndicator()));
               case ConnectionState.active:
                 if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                   final allImages = snapshot.data as Iterable<CloudImage>;

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:emad_client/controller/history_controller.dart';
 import 'package:emad_client/controller/image_generator_controller.dart';
@@ -13,8 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-
-import '../services/cloud/firebase_cloud_storage.dart'; // Importa il modello ImageData
+import '../services/cloud/firebase_cloud_storage.dart';
+import 'package:lottie/lottie.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -223,6 +222,146 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Future<void> _generateImageUsingAI(BuildContext context, String keyword) async {
+    TextEditingController promptController = TextEditingController();
+    ValueNotifier<Widget> contentNotifier = ValueNotifier(Container());
+    ImageData? imageData; // Variabile per memorizzare l'immagine generata
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text('Generazione immagine AI'),
+          content: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.6,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ValueListenableBuilder<Widget>(
+                    valueListenable: contentNotifier,
+                    builder: (context, value, child) {
+                      return value;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  TextField(
+                    controller: promptController,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      prefixIcon: GestureDetector(
+                        onLongPress: () async {
+                          if (!_isListening) {
+                            bool available = await _speechToText.initialize();
+                            if (available) {
+                              setState(() => _isListening = true);
+                              _speechToText.listen(onResult: (result) {
+                                setState(() {
+                                  promptController.text =
+                                      result.recognizedWords;
+                                });
+                              });
+                            }
+                          }
+                        },
+                        onLongPressUp: () {
+                          if (_isListening) {
+                            _speechToText.stop();
+                            setState(() => _isListening = false);
+                          }
+                        },
+                        child: Icon(
+                          Icons.mic,
+                          color: _isListening
+                              ? Colors.red
+                              : const Color(0xFF60A561),
+                        ),
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () async {
+                          if (promptController.text.isNotEmpty) {
+                            contentNotifier.value = Center(
+                              child: Lottie.asset("assets/gifs/lottie_caricamento_ia.json"),
+                            );
+                            try {
+                              // Genera l'immagine usando la IA
+                              imageData = await _imageGeneratorController
+                                  .generateUsingIA(
+                                      promptController.text, keyword);
+
+                              // Non sostituire l'immagine finché non viene confermata
+                              contentNotifier.value = Image.network(
+                                imageData!.url, // Assicurati che imageData non sia null
+                                fit: BoxFit.cover,
+                                height: 200,
+                                width: 200,
+                              );
+                            } catch (e) {
+                              contentNotifier.value = Center(
+                                child: Text(
+                                  'Errore durante la generazione',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              );
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Inserisci qualcosa da generare')),
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.send, color: Color(0xFF60A561)),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      hintText: 'Inserisci una descrizione...',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                // Annulla la generazione e non sostituire l'immagine
+                Navigator.of(dialogContext).pop();
+              },
+              child: Text('Chiudi'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (imageData != null) {
+                  setState(() {
+                    // Sostituisci o aggiungi l'immagine nella lista
+                    int index = generatedImages.indexWhere(
+                      (image) => image.keyword == keyword,
+                    );
+                    if (index != -1) {
+                      // Sostituisci l'immagine esistente
+                      generatedImages[index] = imageData!;
+                    } else {
+                      // Aggiungi una nuova immagine
+                      generatedImages.add(imageData!);
+                    }
+                  });
+                }
+
+                // Chiudi la finestra di dialogo
+                Navigator.of(dialogContext).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -383,8 +522,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                     children: [
                                       // Icona a sinistra
                                       IconButton(
-                                          onPressed: () {
-                                            // Azione per l'icona sinistra
+                                          onPressed: () async {
+                                            _generateImageUsingAI(
+                                                context, imageData.keyword);
                                           },
                                           icon: Image.asset(
                                             "assets/icons/art-and-design.png",
