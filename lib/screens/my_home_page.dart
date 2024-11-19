@@ -295,7 +295,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           if (promptController.text.isNotEmpty) {
                             contentNotifier.value = Center(
                               child: Lottie.asset(
-                                  "assets/gifs/lottie_caricamento_ia.json"),
+                                  "assets/gifs/lottie_caricamento_ia.json",
+                                  width: 200,
+                                  height: 200),
                             );
                             try {
                               // Genera l'immagine usando la IA
@@ -305,8 +307,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
                               // Non sostituire l'immagine finché non viene confermata
                               contentNotifier.value = Image.network(
-                                imageData!.url,
-                                // Assicurati che imageData non sia null
+                                imageData!
+                                    .url, // Assicurati che imageData non sia null
                                 fit: BoxFit.cover,
                                 height: 200,
                                 width: 200,
