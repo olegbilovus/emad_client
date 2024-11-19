@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:emad_client/controller/history_controller.dart';
 import 'package:emad_client/controller/image_generator_controller.dart';
@@ -6,8 +8,10 @@ import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/model/image_data.dart';
 import 'package:emad_client/screens/image_keyword.dart';
 import 'package:emad_client/widget/custom_appbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 import '../services/cloud/firebase_cloud_storage.dart'; // Importa il modello ImageData
@@ -376,15 +380,32 @@ class _MyHomePageState extends State<MyHomePage> {
                                             width: 20,
                                           )),
                                       // Icona a destra
-                                      IconButton(
-                                        onPressed: () {
-                                          // Azione per l'icona destra
-                                        },
-                                        icon: const Icon(
-                                            Icons.upload_file_rounded,
-                                            color: const Color(
-                                                0xFF60A561) // Scelta del colore
-                                            ),
+                                      Visibility(
+                                        visible:
+                                            FirebaseAuth.instance.currentUser !=
+                                                null,
+                                        child: IconButton(
+                                          onPressed: () async {
+                                            var image =
+                                                await ImagePicker().pickMedia();
+                                            if (image == null) {
+                                              return;
+                                            }
+                                            _imagesService.addImage(
+                                              userId: FirebaseAuth
+                                                  .instance.currentUser!.uid,
+                                              keyword: imageData.keyword,
+                                              base64: base64Encode(
+                                                  (await image.readAsBytes())
+                                                      .toList()),
+                                            );
+                                          },
+                                          icon: const Icon(
+                                              Icons.upload_file_rounded,
+                                              color: Color(
+                                                  0xFF60A561) // Scelta del colore
+                                              ),
+                                        ),
                                       ),
                                     ],
                                   ),
