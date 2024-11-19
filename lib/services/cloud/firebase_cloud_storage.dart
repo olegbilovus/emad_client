@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emad_client/services/cloud/cloud_storage_constants.dart';
 import 'package:emad_client/services/cloud/cloud_storage_exception.dart';
@@ -21,9 +23,17 @@ class FirebaseCloudStorage {
       {required String userId,
       required String keyword,
       required String base64}) async {
+    try {
+      final prevImage =
+          await getImageByKeyword(userId: userId, keyword: keyword);
+      await deleteImage(imageId: prevImage.imageId);
+      dev.log("Deleted already existing image for keyword: $keyword");
+    } catch (_) {}
+
     final doc = await images
         .add({userIdField: userId, keywordField: keyword, base64Field: base64});
     final fetchedImage = await doc.get();
+    dev.log("Added image for keyword: $keyword");
 
     return CloudImage(
       imageId: fetchedImage.id,

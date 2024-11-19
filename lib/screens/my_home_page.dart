@@ -125,6 +125,18 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void _uploadImage(ImageData imageData) async {
+    final image = await ImagePicker().pickMedia(imageQuality: 25);
+    if (image == null) {
+      return;
+    }
+    _imagesService.addImage(
+      userId: FirebaseAuth.instance.currentUser!.uid,
+      keyword: imageData.keyword,
+      base64: base64Encode((await image.readAsBytes()).toList()),
+    );
+  }
+
   void _showCustomModalBottomSheet() {
     final history = _historyController.getHistory();
 
@@ -385,20 +397,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                             FirebaseAuth.instance.currentUser !=
                                                 null,
                                         child: IconButton(
-                                          onPressed: () async {
-                                            var image =
-                                                await ImagePicker().pickMedia();
-                                            if (image == null) {
-                                              return;
-                                            }
-                                            _imagesService.addImage(
-                                              userId: FirebaseAuth
-                                                  .instance.currentUser!.uid,
-                                              keyword: imageData.keyword,
-                                              base64: base64Encode(
-                                                  (await image.readAsBytes())
-                                                      .toList()),
-                                            );
+                                          onPressed: () {
+                                            _uploadImage(imageData);
                                           },
                                           icon: const Icon(
                                               Icons.upload_file_rounded,
