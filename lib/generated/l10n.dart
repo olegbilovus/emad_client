@@ -200,20 +200,20 @@ class S {
     );
   }
 
-  /// `Immagine caricata`
+  /// `Image uploaded`
   String get image_uploaded {
     return Intl.message(
-      'Immagine caricata',
+      'Image uploaded',
       name: 'image_uploaded',
       desc: '',
       args: [],
     );
   }
 
-  /// `Immagine caricata per la parola `
+  /// `Image uploaded for the word `
   String get image_uploaded_keyword {
     return Intl.message(
-      'Immagine caricata per la parola ',
+      'Image uploaded for the word ',
       name: 'image_uploaded_keyword',
       desc: '',
       args: [],

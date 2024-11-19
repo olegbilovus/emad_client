@@ -29,9 +29,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "Are you sure you want to delete?"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
         "image_uploaded":
-            MessageLookupByLibrary.simpleMessage("Immagine caricata"),
+            MessageLookupByLibrary.simpleMessage("Image uploaded"),
         "image_uploaded_keyword": MessageLookupByLibrary.simpleMessage(
-            "Immagine caricata per la parola "),
+            "Image uploaded for the word "),
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
         "logout_content": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to logout?"),
