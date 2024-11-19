@@ -14,5 +14,7 @@
   "cancel": "Annulla",
   "delete_content": "Sei sicuro di voler eliminare?",
   "logout": "Esci",
-  "logout_content": "Sei sicuro di voler uscire?"
+  "logout_content": "Sei sicuro di voler uscire?",
+  "image_uploaded": "Image uploaded",
+  "image_uploaded_keyword": "Image uploaded for the word "
 }
