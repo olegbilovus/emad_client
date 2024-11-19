@@ -3,8 +3,9 @@ import 'dart:developer' as dev;
 
 class ApiService {
   //url del backend
-  final String url = "https://api.3111616.xyz";
-  //final String url = "https://7325af20a14a05d54ccbd2c6111844da.3111616.xyz"; //testing url
+  //final String url = "https://api.3111616.xyz";
+  final String url =
+      "https://7325af20a14a05d54ccbd2c6111844da.3111616.xyz"; //testing url
   final _clientApiKey = "84a5bfe58847ed1709f3cd075db8651f";
 
   ApiService();
