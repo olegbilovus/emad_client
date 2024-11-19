@@ -199,6 +199,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Immagine caricata`
+  String get image_uploaded {
+    return Intl.message(
+      'Immagine caricata',
+      name: 'image_uploaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Immagine caricata per la parola `
+  String get image_uploaded_keyword {
+    return Intl.message(
+      'Immagine caricata per la parola ',
+      name: 'image_uploaded_keyword',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

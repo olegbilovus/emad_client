@@ -14,5 +14,7 @@
   "cancel": "Cancel",
   "delete_content": "Are you sure you want to delete?",
   "logout": "Logout",
-  "logout_content": "Are you sure you want to logout?"
+  "logout_content": "Are you sure you want to logout?",
+  "image_uploaded": "Immagine caricata",
+  "image_uploaded_keyword": "Immagine caricata per la parola "
 }

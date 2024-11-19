@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:emad_client/controller/history_controller.dart';
 import 'package:emad_client/controller/image_generator_controller.dart';
@@ -7,13 +8,15 @@ import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/model/image_data.dart';
 import 'package:emad_client/screens/image_keyword.dart';
 import 'package:emad_client/widget/custom_appbar.dart';
+import 'package:emad_client/widget/dialogs/generic_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:speech_to_text/speech_to_text.dart';
-import '../services/cloud/firebase_cloud_storage.dart';
 import 'package:lottie/lottie.dart';
+import 'package:speech_to_text/speech_to_text.dart';
+
+import '../services/cloud/firebase_cloud_storage.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -124,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _uploadImage(ImageData imageData) async {
+  void _uploadImage(BuildContext context, ImageData imageData) async {
     final image = await ImagePicker().pickMedia(imageQuality: 25);
     if (image == null) {
       return;
@@ -134,6 +137,12 @@ class _MyHomePageState extends State<MyHomePage> {
       keyword: imageData.keyword,
       base64: base64Encode((await image.readAsBytes()).toList()),
     );
+
+    showGenericDialog(
+        context: context,
+        title: context.loc.image_uploaded,
+        content: '${context.loc.image_uploaded_keyword} "${imageData.keyword}"',
+        optionsBuilder: () => {Text("OK"): null});
   }
 
   void _showCustomModalBottomSheet() {
@@ -222,7 +231,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> _generateImageUsingAI(BuildContext context, String keyword) async {
+  Future<void> _generateImageUsingAI(
+      BuildContext context, String keyword) async {
     TextEditingController promptController = TextEditingController();
     ValueNotifier<Widget> contentNotifier = ValueNotifier(Container());
     ImageData? imageData; // Variabile per memorizzare l'immagine generata
@@ -284,7 +294,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () async {
                           if (promptController.text.isNotEmpty) {
                             contentNotifier.value = Center(
-                              child: Lottie.asset("assets/gifs/lottie_caricamento_ia.json"),
+                              child: Lottie.asset(
+                                  "assets/gifs/lottie_caricamento_ia.json"),
                             );
                             try {
                               // Genera l'immagine usando la IA
@@ -294,7 +305,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
                               // Non sostituire l'immagine finché non viene confermata
                               contentNotifier.value = Image.network(
-                                imageData!.url, // Assicurati che imageData non sia null
+                                imageData!.url,
+                                // Assicurati che imageData non sia null
                                 fit: BoxFit.cover,
                                 height: 200,
                                 width: 200,
@@ -309,7 +321,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Inserisci qualcosa da generare')),
+                              SnackBar(
+                                  content:
+                                      Text('Inserisci qualcosa da generare')),
                             );
                           }
                         },
@@ -538,7 +552,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                 null,
                                         child: IconButton(
                                           onPressed: () {
-                                            _uploadImage(imageData);
+                                            _uploadImage(context, imageData);
                                           },
                                           icon: const Icon(
                                               Icons.upload_file_rounded,
