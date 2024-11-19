@@ -44,7 +44,7 @@ class ImageGeneratorController {
         }
 
         final url = data['url'];
-        print("Url immagine genAI: $url");
+        dev.log("Url immagine genAI: $url");
         return ImageData(
           url: url,
           keyword: keyword,

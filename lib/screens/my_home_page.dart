@@ -222,7 +222,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> _generateImageUsingAI(BuildContext context, String keyword) async {
+  Future<void> _generateImageUsingAI(
+      BuildContext context, String keyword) async {
     TextEditingController promptController = TextEditingController();
     ValueNotifier<Widget> contentNotifier = ValueNotifier(Container());
     ImageData? imageData; // Variabile per memorizzare l'immagine generata
@@ -284,7 +285,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () async {
                           if (promptController.text.isNotEmpty) {
                             contentNotifier.value = Center(
-                              child: Lottie.asset("assets/gifs/lottie_caricamento_ia.json"),
+                              child: Lottie.asset(
+                                  "assets/gifs/lottie_caricamento_ia.json",
+                                  width: 200,
+                                  height: 200),
                             );
                             try {
                               // Genera l'immagine usando la IA
@@ -294,7 +298,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
                               // Non sostituire l'immagine finché non viene confermata
                               contentNotifier.value = Image.network(
-                                imageData!.url, // Assicurati che imageData non sia null
+                                imageData!
+                                    .url, // Assicurati che imageData non sia null
                                 fit: BoxFit.cover,
                                 height: 200,
                                 width: 200,
@@ -309,7 +314,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Inserisci qualcosa da generare')),
+                              SnackBar(
+                                  content:
+                                      Text('Inserisci qualcosa da generare')),
                             );
                           }
                         },
