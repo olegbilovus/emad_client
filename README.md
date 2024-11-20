@@ -21,5 +21,9 @@ CAApp is structured on a Client-Server architecture, based on [RestAPI](https://
 | [simple_gradient_text](https://pub.dev/packages/simple_gradient_text) |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
 | [shared_preferences](https://pub.dev/packages/shared_preferences) |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
 | [speech_to_text](https://pub.dev/packages/speech_to_text)         |   ✅    |   ✅   |       |   ✅   |   ✅   |         |
-
-
+|[firebase_core](https://pub.dev/packages/firebase_core)            |   ✅    |   ✅   |       |   ✅   |   ✅   |    ✅    |
+|[firebase_auth](https://pub.dev/packages/firebase_auth)            |   ✅    |   ✅   |       |   ✅   |   ✅   |    ✅    |
+|[firebase_ui_auth](https://pub.dev/packages/firebase_ui_auth)      |   ✅    |   ✅   |       |       |       |         |
+|[cloud_firestore](https://pub.dev/packages/cloud_firestore)        |   ✅    |   ✅   |       |   ✅   |   ✅   |    ✅    |
+|[image_picker](https://pub.dev/packages/image_picker)              |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+|[http](https://pub.dev/packages/http)                              |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
