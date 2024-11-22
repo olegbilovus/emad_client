@@ -581,6 +581,9 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
                 child: TextField(
+                  onTapOutside: (event) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
                   controller: _textEditingController,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
