@@ -53,11 +53,11 @@ class ImageKeyword extends StatelessWidget {
       height: 220,
       fit: BoxFit.contain,
       errorBuilder: (context, error, stackTrace) {
-        return Container(
-          width: 150,
-          height: 150,
-          color: Colors.grey,
-          child: const Icon(Icons.broken_image),
+        return Image.asset(
+          'assets/icons/imageNotFound.png',
+          width: 200, // Specifica la larghezza dell'immagine
+          height: 220, // Specifica l'altezza dell'immagine
+          fit: BoxFit.contain, // Per regolare l'immagine all'interno del box
         );
       },
     );
