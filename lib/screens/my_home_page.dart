@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:emad_client/controller/history_controller.dart';
 import 'package:emad_client/controller/image_generator_controller.dart';
@@ -7,6 +6,7 @@ import 'package:emad_client/controller/network_controller.dart';
 import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/model/image_data.dart';
 import 'package:emad_client/screens/image_keyword.dart';
+import 'package:emad_client/services/shared_preferences_singleton.dart';
 import 'package:emad_client/widget/custom_appbar.dart';
 import 'package:emad_client/widget/dialogs/generic_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,7 +15,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-
+import 'dart:developer' as dev;
 import '../services/cloud/firebase_cloud_storage.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -51,6 +51,13 @@ class _MyHomePageState extends State<MyHomePage> {
     _historyController.init();
   }
 
+  void _checkParentalPreferences() {
+    sex = SharedPreferencesSingleton.instance.getSexFlag() ?? false;
+    dev.log("Sexo $sex");
+    violence = SharedPreferencesSingleton.instance.getViolenceFlag() ?? false;
+    dev.log("Viulenz: $violence");
+  }
+
   Future<void> _generateImages() async {
     final prompt = _textEditingController.text;
     if (prompt.isEmpty) {
@@ -72,6 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
         Get.toNamed('/no_connection');
         return;
       }
+
+      _checkParentalPreferences();
 
       final images = await _imageGeneratorController.generateImagesFromPrompt(
           sex: sex, violence: violence, prompt: prompt, language: language);
@@ -236,6 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
     TextEditingController promptController = TextEditingController();
     ValueNotifier<Widget> contentNotifier = ValueNotifier(Container());
     ImageData? imageData; // Variabile per memorizzare l'immagine generata
+    int style = SharedPreferencesSingleton.instance.getAIstyle() ?? 1;
 
     await showDialog(
       context: context,
@@ -303,7 +313,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               // Genera l'immagine usando la IA
                               imageData = await _imageGeneratorController
                                   .generateUsingIA(
-                                      promptController.text, keyword);
+                                      _imageGeneratorController.concatenaPrompt(
+                                          context, style, promptController),
+                                      keyword);
 
                               // Non sostituire l'immagine finché non viene confermata
                               contentNotifier.value = Image.network(

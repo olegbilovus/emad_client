@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'package:emad_client/costants/ai_styles.dart';
 import 'package:emad_client/services/api_service.dart';
 import 'package:emad_client/model/image_data.dart';
 import 'dart:developer' as dev;
+
+import 'package:flutter/material.dart';
 
 class ImageGeneratorController {
   final ApiService _apiService = ApiService();
@@ -13,7 +16,7 @@ class ImageGeneratorController {
     required String language,
   }) async {
     final response =
-        await _apiService.getImages(false, false, prompt, language);
+        await _apiService.getImages(sex, violence, prompt, language);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -34,6 +37,7 @@ class ImageGeneratorController {
 
   Future<ImageData> generateUsingIA(String prompt, String keyword) async {
     try {
+      print("Prompt: $prompt");
       final response = await _apiService.getGenAImage(prompt);
 
       if (response.statusCode == 200) {
@@ -56,6 +60,20 @@ class ImageGeneratorController {
     } catch (e) {
       dev.log("Errore durante la generazione immagine: $e");
       rethrow; // Propaga l'errore per gestirlo a monte
+    }
+  }
+
+  String concatenaPrompt(
+      BuildContext context, int stile, TextEditingController promptController) {
+    switch (stile) {
+      case 1:
+        return "Disegna ${promptController.text} nello stile ${Stili.pittogrammi.name}";
+      case 2:
+        return "Disegna ${promptController.text} nello stile ${Stili.realismo.name}";
+      case 3:
+        return "Disegna ${promptController.text} nello stile ${Stili.cartoon.name}";
+      default:
+        return "Disegna ${promptController.text}";
     }
   }
 }
