@@ -11,6 +11,9 @@ class SharedPreferencesSingleton {
   static SharedPreferencesSingleton get instance => _instance;
 
   static SharedPreferences? _prefs;
+  final _sexKey = "sex";
+  final _violenceKey = "violence";
+  final _aiStyleKey = "AIstyle";
 
   Future<void> init() async {
     _prefs ??= await SharedPreferences.getInstance();
@@ -57,5 +60,33 @@ class SharedPreferencesSingleton {
     }
 
     return queue;
+  }
+
+  //imposta il booleano del campo 'sex' della risposta
+  Future<void> setSexFlag(bool flag) async {
+    await _prefs?.setBool(_sexKey, flag);
+  }
+
+  //ritorna il booleano del campo 'sex' della risposta
+  bool? getSexFlag() {
+    return _prefs?.getBool(_sexKey);
+  }
+
+  //imposta il booleano del campo 'violence' della risposta
+  Future<void> setViolenceFlag(bool flag) async {
+    await _prefs?.setBool(_violenceKey, flag);
+  }
+
+  //ritorna il booleano del campo 'violence' della risposta
+  bool? getViolenceFlag() {
+    return _prefs?.getBool(_violenceKey);
+  }
+
+  Future<void> setAIstyle(int choice) async {
+    await _prefs?.setInt(_aiStyleKey, choice);
+  }
+
+  int? getAIstyle() {
+    return _prefs?.getInt(_aiStyleKey);
   }
 }
