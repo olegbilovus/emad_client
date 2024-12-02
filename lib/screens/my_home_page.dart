@@ -346,7 +346,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      hintText: 'Inserisci una descrizione...',
+                      hintText: 'Cosa vuoi generare...',
                     ),
                   ),
                 ],

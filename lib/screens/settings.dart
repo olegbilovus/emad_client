@@ -18,6 +18,7 @@ class _SettingsState extends State<Settings> {
   // 2 - Realismo
   // 3 - Cartoon
   int _selectedValue = 1;
+  String _selectedLanguage = "";
 
   @override
   void initState() {
@@ -32,6 +33,8 @@ class _SettingsState extends State<Settings> {
       _flagViolence =
           SharedPreferencesSingleton.instance.getViolenceFlag() ?? false;
       _selectedValue = SharedPreferencesSingleton.instance.getAIstyle() ?? 1;
+      _selectedLanguage =
+          SharedPreferencesSingleton.instance.getLanguage() ?? "it";
     });
   }
 
@@ -163,7 +166,10 @@ class _SettingsState extends State<Settings> {
             Column(
               children: [
                 ListTile(
-                  title: const Text('Pittogrammi'),
+                  title: const Text(
+                    'pittogrammi',
+                    style: TextStyle(fontSize: 16),
+                  ),
                   leading: Radio<int>(
                     value: 1,
                     groupValue: _selectedValue,
@@ -178,7 +184,10 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 ListTile(
-                  title: const Text('Realismo'),
+                  title: const Text(
+                    'realismo',
+                    style: TextStyle(fontSize: 16),
+                  ),
                   leading: Radio<int>(
                     value: 2,
                     groupValue: _selectedValue,
@@ -193,7 +202,7 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 ListTile(
-                  title: const Text('Cartoon'),
+                  title: const Text('cartoon', style: TextStyle(fontSize: 16)),
                   leading: Radio<int>(
                     value: 3,
                     groupValue: _selectedValue,
@@ -208,7 +217,110 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
               ],
-            )
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            Divider(
+              height: 1,
+              color: Colors.grey,
+              thickness: 1.0,
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Lingua della chat",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      GestureDetector(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Icon(
+                            Icons.info_outline,
+                            color: Color(0xFF60A561),
+                          ),
+                        ),
+                        onTap: () {
+                          mostraBottomSheet(
+                            "Abbattiamo le barriere linguistiche",
+                            "Con questa funzionalità puoi selezionare la lingua con cui comunicare via testo",
+                            "assets/icons/languages.png",
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedLanguage = "it";
+                      SharedPreferencesSingleton.instance
+                          .setLanguage(_selectedLanguage);
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        "assets/icons/italy.png",
+                        height: 40,
+                        width: 40,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Text(
+                          "Italiano",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      if (_selectedLanguage == "it")
+                        Icon(
+                          Icons.check_circle,
+                          color: Color(0xFF60A561),
+                        ),
+                    ],
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedLanguage = "en";
+                      SharedPreferencesSingleton.instance
+                          .setLanguage(_selectedLanguage);
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        "assets/icons/united-kingdom.png",
+                        height: 40,
+                        width: 40,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Text(
+                          "Inglese",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      if (_selectedLanguage == "en")
+                        Icon(
+                          Icons.check_circle,
+                          color: Color(0xFF60A561),
+                        ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ],
         ),
       ),
