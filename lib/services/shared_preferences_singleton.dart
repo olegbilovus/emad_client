@@ -14,6 +14,7 @@ class SharedPreferencesSingleton {
   final _sexKey = "sex";
   final _violenceKey = "violence";
   final _aiStyleKey = "AIstyle";
+  final _languageKey = "language";
 
   Future<void> init() async {
     _prefs ??= await SharedPreferences.getInstance();
@@ -88,5 +89,13 @@ class SharedPreferencesSingleton {
 
   int? getAIstyle() {
     return _prefs?.getInt(_aiStyleKey);
+  }
+
+  Future<void> setLanguage(String lan) async {
+    await _prefs?.setString(_languageKey, lan);
+  }
+
+  String? getLanguage() {
+    return _prefs?.getString(_languageKey);
   }
 }
