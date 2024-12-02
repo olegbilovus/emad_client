@@ -62,13 +62,12 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Text(
                     text,
                     textAlign: TextAlign.center,
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -108,9 +107,7 @@ class _SettingsState extends State<Settings> {
                     },
                   ),
                 ),
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.20,
-                ),
+                SizedBox(width: 0),
                 Switch(
                   // This bool value toggles the switch.
                   value: _flagSex && _flagViolence,
