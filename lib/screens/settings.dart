@@ -89,7 +89,7 @@ class _SettingsState extends State<Settings> {
             Row(
               children: [
                 Text(
-                  "Nascondi contenuti sensibili",
+                  "Parental control",
                   style: TextStyle(fontSize: 20),
                 ),
                 Padding(
@@ -107,7 +107,7 @@ class _SettingsState extends State<Settings> {
                     },
                   ),
                 ),
-                SizedBox(width: 0),
+                Spacer(),
                 Switch(
                   // This bool value toggles the switch.
                   value: _flagSex && _flagViolence,
