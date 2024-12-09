@@ -37,7 +37,7 @@ class ImageGeneratorController {
 
   Future<ImageData> generateUsingIA(String prompt, String keyword) async {
     try {
-      print("Prompt: $prompt");
+      dev.log("Prompt: $prompt");
       final response = await _apiService.getGenAImage(prompt);
 
       if (response.statusCode == 200) {

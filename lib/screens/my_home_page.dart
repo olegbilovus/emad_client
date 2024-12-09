@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isLoadingImages = false;
   bool violence = false;
   bool sex = false;
-  String language = "it";
+  late String _language;
 
   @override
   void initState() {
@@ -51,11 +51,12 @@ class _MyHomePageState extends State<MyHomePage> {
     _historyController.init();
   }
 
-  void _checkParentalPreferences() {
+  void _checkPreferences() {
     sex = SharedPreferencesSingleton.instance.getSexFlag() ?? false;
     dev.log("Sexo $sex");
     violence = SharedPreferencesSingleton.instance.getViolenceFlag() ?? false;
     dev.log("Viulenz: $violence");
+    _language = SharedPreferencesSingleton.instance.getLanguage() ?? "it";
   }
 
   Future<void> _generateImages() async {
@@ -80,10 +81,10 @@ class _MyHomePageState extends State<MyHomePage> {
         return;
       }
 
-      _checkParentalPreferences();
+      _checkPreferences();
 
       final images = await _imageGeneratorController.generateImagesFromPrompt(
-          sex: sex, violence: violence, prompt: prompt, language: language);
+          sex: sex, violence: violence, prompt: prompt, language: _language);
 
       setState(() {
         generatedImages = images; // Aggiorna con la lista di ImageData
@@ -117,8 +118,10 @@ class _MyHomePageState extends State<MyHomePage> {
         return;
       }
 
+      _checkPreferences();
+
       final images = await _imageGeneratorController.generateImagesFromPrompt(
-          sex: sex, violence: violence, prompt: prompt, language: language);
+          sex: sex, violence: violence, prompt: prompt, language: _language);
 
       setState(() {
         generatedImages = images; // Aggiorna con la lista di ImageData
