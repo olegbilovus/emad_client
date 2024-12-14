@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:emad_client/controller/history_controller.dart';
 import 'package:emad_client/controller/image_generator_controller.dart';
@@ -29,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late final FirebaseCloudStorage _imagesService;
-
+  final PageController _pageController = PageController();
   final TextEditingController _textEditingController = TextEditingController();
   final HistoryController _historyController = HistoryController();
   final NetworkController _networkController = NetworkController();
@@ -538,23 +539,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                             left: 10.0),
                                         child: GestureDetector(
                                           onTap: () async {
-                                            //per Lorenzo fatti una funzione apparte e chiami il codice qua
-                                            List<String> pippo =
-                                                await _imageGeneratorController
-                                                    .generateImagesFromKeyword(
-                                                        violence: violence,
-                                                        sex: sex,
-                                                        keyword: imageData
-                                                            .keyword
-                                                            .toLowerCase(),
-                                                        language:
-                                                            SharedPreferencesSingleton
-                                                                .instance
-                                                                .getLanguage()!);
-
-                                            for (var url in pippo) {
-                                              print("Image URL: $url");
-                                            }
+                                            await showImageSelectionDialog(
+                                              context: context,
+                                              imageData: imageData,
+                                              violence: violence,
+                                              sex: sex,
+                                            );
                                           },
                                           child: ImageKeyword(
                                             imageData: imageData,
@@ -713,5 +703,168 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+
+  Future<void> showImageSelectionDialog({
+    required BuildContext context,
+    required ImageData imageData,
+    required bool violence,
+    required bool sex,
+  }) async {
+    // Generazione delle immagini
+    List<String> pippo =
+        await _imageGeneratorController.generateImagesFromKeyword(
+      violence: violence,
+      sex: sex,
+      keyword: imageData.keyword.toLowerCase(),
+      language: SharedPreferencesSingleton.instance.getLanguage()!,
+    );
+
+    // Definisci un PageController per controllare lo scorrimento
+    PageController _pageController = PageController(initialPage: 0);
+
+    // Variabili per gestire la visibilità delle frecce
+    bool showLeftArrow = false;
+    bool showRightArrow =
+        pippo.length > 1; // Se c'è solo una immagine, le frecce sono nascoste
+
+    // Mostra il pop-up con le immagini
+    final selectedImage = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return AlertDialog(
+              title: Text('Immagini Trovate'),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: Stack(
+                  children: [
+                    // Visualizzazione delle immagini
+                    PageView.builder(
+                      controller: _pageController,
+                      itemCount: pippo.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              // Restituisci l'URL selezionato e chiudi il pop-up
+                              Navigator.of(context).pop(pippo[index]);
+                            },
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                width: MediaQuery.of(context)
+                                    .size
+                                    .width, // Larghezza dell'immagine
+                                height:
+                                    200, // Altezza dell'immagine (puoi modificarla come preferisci)
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      10), // Bordo arrotondato per l'immagine
+                                  child: CachedNetworkImage(
+                                    imageUrl: pippo[index], // URL immagine
+                                    fit: BoxFit
+                                        .contain, // L'immagine si adatta all'area disponibile
+                                    height: 200, // Altezza fissa per l'immagine
+                                    width: MediaQuery.of(context)
+                                        .size
+                                        .width, // Larghezza dell'immagine
+                                    placeholder: (context, url) => Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error, color: Colors.red),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      onPageChanged: (int index) {
+                        setState(() {
+                          // Se siamo sulla prima immagine, nascondiamo la freccia sinistra
+                          showLeftArrow = index > 0;
+                          // Se siamo sull'ultima immagine, nascondiamo la freccia destra
+                          showRightArrow = index < pippo.length - 1;
+                        });
+                      },
+                    ),
+
+                    // Icona freccia sinistra
+                    Positioned(
+                      bottom: 10,
+                      left: 10,
+                      child: showLeftArrow
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.arrow_back,
+                                color: Colors.black,
+                                size: 40,
+                              ),
+                              onPressed: () {
+                                _pageController.previousPage(
+                                  duration: Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              },
+                            )
+                          : Container(),
+                    ),
+
+                    // Icona freccia destra
+                    Positioned(
+                      bottom: 10,
+                      right: 10,
+                      child: showRightArrow
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.arrow_forward,
+                                color: Colors.black,
+                                size: 40,
+                              ),
+                              onPressed: () {
+                                _pageController.nextPage(
+                                  duration: Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              },
+                            )
+                          : Container(),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pop(); // Chiude il pop-up senza selezione
+                  },
+                  child: Text('Chiudi'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    // Aggiorna la lista `generatedImages` con il nuovo URL e keyword selezionati
+    if (selectedImage != null) {
+      setState(() {
+        // Trova l'indice dell'immagine corrente nella lista
+        final int index = generatedImages.indexOf(imageData);
+        if (index != -1) {
+          // Aggiorna l'immagine nella lista
+          generatedImages[index] = ImageData(
+            url: selectedImage, // Nuovo URL
+            keyword: imageData.keyword, // Mantieni la keyword originale
+          );
+        }
+      });
+    }
   }
 }
