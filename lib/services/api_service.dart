@@ -26,4 +26,13 @@ class ApiService {
     return http.get(Uri.parse(url + path),
         headers: {"accept": "application/json", "api-key": _clientApiKey});
   }
+
+  //metodo che chiama il servizio di generazione delle immagini per una keyword
+  Future<http.Response> getImagesFromKeyword(
+      bool sex, bool violence, String keyword, String lan) {
+    String path =
+        "/v2/images/?sex=$sex&violence=$violence&text=$keyword&language=$lan&one_image=false";
+    dev.log("L'url della richiesta GET è: ${url + path}");
+    return http.get(Uri.parse(url + path));
+  }
 }

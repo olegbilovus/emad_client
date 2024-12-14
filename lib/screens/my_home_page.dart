@@ -536,9 +536,30 @@ class _MyHomePageState extends State<MyHomePage> {
                                             bottom: 20.0,
                                             right: 10.0,
                                             left: 10.0),
-                                        child: ImageKeyword(
-                                          imageData: imageData,
-                                          imagesService: _imagesService,
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            //per Lorenzo fatti una funzione apparte e chiami il codice qua
+                                            List<String> pippo =
+                                                await _imageGeneratorController
+                                                    .generateImagesFromKeyword(
+                                                        violence: violence,
+                                                        sex: sex,
+                                                        keyword: imageData
+                                                            .keyword
+                                                            .toLowerCase(),
+                                                        language:
+                                                            SharedPreferencesSingleton
+                                                                .instance
+                                                                .getLanguage()!);
+
+                                            for (var url in pippo) {
+                                              print("Image URL: $url");
+                                            }
+                                          },
+                                          child: ImageKeyword(
+                                            imageData: imageData,
+                                            imagesService: _imagesService,
+                                          ),
                                         ),
                                       ),
                                     ),
