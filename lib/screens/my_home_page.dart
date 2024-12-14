@@ -539,7 +539,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             left: 10.0),
                                         child: GestureDetector(
                                           onTap: () async {
-                                            await showImageSelectionDialog(
+                                            await mostraSostituisciImmaginePerKeyword(
                                               context: context,
                                               imageData: imageData,
                                               violence: violence,
@@ -705,19 +705,19 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> showImageSelectionDialog({
+  Future<void> mostraSostituisciImmaginePerKeyword({
     required BuildContext context,
     required ImageData imageData,
     required bool violence,
     required bool sex,
   }) async {
     // Generazione delle immagini
-    List<String> pippo =
+    List<String> images =
         await _imageGeneratorController.generateImagesFromKeyword(
       violence: violence,
       sex: sex,
       keyword: imageData.keyword.toLowerCase(),
-      language: SharedPreferencesSingleton.instance.getLanguage()!,
+      language: _language,
     );
 
     // Definisci un PageController per controllare lo scorrimento
@@ -726,7 +726,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Variabili per gestire la visibilità delle frecce
     bool showLeftArrow = false;
     bool showRightArrow =
-        pippo.length > 1; // Se c'è solo una immagine, le frecce sono nascoste
+        images.length > 1; // Se c'è solo una immagine, le frecce sono nascoste
 
     // Mostra il pop-up con le immagini
     final selectedImage = await showDialog<String>(
@@ -743,14 +743,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     // Visualizzazione delle immagini
                     PageView.builder(
                       controller: _pageController,
-                      itemCount: pippo.length,
+                      itemCount: images.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4.0),
                           child: GestureDetector(
                             onTap: () {
                               // Restituisci l'URL selezionato e chiudi il pop-up
-                              Navigator.of(context).pop(pippo[index]);
+                              Navigator.of(context).pop(images[index]);
                             },
                             child: Align(
                               alignment: Alignment.center,
@@ -764,7 +764,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   borderRadius: BorderRadius.circular(
                                       10), // Bordo arrotondato per l'immagine
                                   child: CachedNetworkImage(
-                                    imageUrl: pippo[index], // URL immagine
+                                    imageUrl: images[index], // URL immagine
                                     fit: BoxFit
                                         .contain, // L'immagine si adatta all'area disponibile
                                     height: 200, // Altezza fissa per l'immagine
@@ -788,7 +788,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           // Se siamo sulla prima immagine, nascondiamo la freccia sinistra
                           showLeftArrow = index > 0;
                           // Se siamo sull'ultima immagine, nascondiamo la freccia destra
-                          showRightArrow = index < pippo.length - 1;
+                          showRightArrow = index < images.length - 1;
                         });
                       },
                     ),
