@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:developer' as dev;
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:emad_client/controller/history_controller.dart';
 import 'package:emad_client/controller/image_generator_controller.dart';
@@ -16,7 +17,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'dart:developer' as dev;
+
 import '../services/cloud/firebase_cloud_storage.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -323,8 +324,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
                               // Non sostituire l'immagine finché non viene confermata
                               contentNotifier.value = Image.network(
-                                imageData!
-                                    .url, // Assicurati che imageData non sia null
+                                imageData!.url,
+                                // Assicurati che imageData non sia null
                                 fit: BoxFit.cover,
                                 height: 200,
                                 width: 200,
@@ -721,7 +722,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     // Definisci un PageController per controllare lo scorrimento
-    PageController _pageController = PageController(initialPage: 0);
+    PageController pageController = PageController(initialPage: 0);
 
     // Variabili per gestire la visibilità delle frecce
     bool showLeftArrow = false;
@@ -742,7 +743,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     // Visualizzazione delle immagini
                     PageView.builder(
-                      controller: _pageController,
+                      controller: pageController,
                       itemCount: images.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Padding(
@@ -754,28 +755,30 @@ class _MyHomePageState extends State<MyHomePage> {
                             },
                             child: Align(
                               alignment: Alignment.center,
-                              child: Container(
-                                width: MediaQuery.of(context)
-                                    .size
-                                    .width, // Larghezza dell'immagine
-                                height:
-                                    200, // Altezza dell'immagine (puoi modificarla come preferisci)
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                // Larghezza dell'immagine
+                                height: 200,
+                                // Altezza dell'immagine (puoi modificarla come preferisci)
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(
                                       10), // Bordo arrotondato per l'immagine
-                                  child: CachedNetworkImage(
-                                    imageUrl: images[index], // URL immagine
-                                    fit: BoxFit
-                                        .contain, // L'immagine si adatta all'area disponibile
-                                    height: 200, // Altezza fissa per l'immagine
-                                    width: MediaQuery.of(context)
-                                        .size
-                                        .width, // Larghezza dell'immagine
-                                    placeholder: (context, url) => Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error, color: Colors.red),
+                                  child: Image.network(
+                                    images[index],
+                                    width: 200,
+                                    height: 220,
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        'assets/icons/imageNotFound.png',
+                                        width: 200,
+                                        // Specifica la larghezza dell'immagine
+                                        height: 220,
+                                        // Specifica l'altezza dell'immagine
+                                        fit: BoxFit
+                                            .contain, // Per regolare l'immagine all'interno del box
+                                      );
+                                    },
                                   ),
                                 ),
                               ),
@@ -805,7 +808,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 size: 40,
                               ),
                               onPressed: () {
-                                _pageController.previousPage(
+                                pageController.previousPage(
                                   duration: Duration(milliseconds: 300),
                                   curve: Curves.easeInOut,
                                 );
@@ -826,7 +829,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 size: 40,
                               ),
                               onPressed: () {
-                                _pageController.nextPage(
+                                pageController.nextPage(
                                   duration: Duration(milliseconds: 300),
                                   curve: Curves.easeInOut,
                                 );
