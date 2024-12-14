@@ -76,4 +76,30 @@ class ImageGeneratorController {
         return "Disegna ${promptController.text}";
     }
   }
+
+  Future<List<String>> generateImagesFromKeyword({
+    required bool violence,
+    required bool sex,
+    required String keyword,
+    required String language,
+  }) async {
+    final response = await _apiService.getImagesFromKeyword(
+        sex, violence, keyword, language);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final String urlRoot = data['url_root'];
+      final List images = data['keyword_images'][0]['images'];
+
+      //crea una lista di URL
+      final List<String> imageUrls = images.map<String>((image) {
+        final int id = image['id'];
+        return "$urlRoot$id.png";
+      }).toList();
+
+      return imageUrls;
+    } else {
+      throw Exception("Errore nella risposta API: ${response.statusCode}");
+    }
+  }
 }
