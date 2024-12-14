@@ -27,7 +27,7 @@ jobs:
         run: flutter pub get
 
       - name: Creates web build
-        run: flutter build web --release --web-renderer html
+        run: flutter build web --release
 
       - name: Replace base href
         run: sed -i 's\<base href="/">\<base href="./">\g' build/web/index.html
