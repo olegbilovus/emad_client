@@ -768,6 +768,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                     width: 200,
                                     height: 220,
                                     fit: BoxFit.contain,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      } else {
+                                        return Center(
+                                            child: CircularProgressIndicator());
+                                      }
+                                    },
                                     errorBuilder: (context, error, stackTrace) {
                                       return Image.asset(
                                         'assets/icons/imageNotFound.png',
