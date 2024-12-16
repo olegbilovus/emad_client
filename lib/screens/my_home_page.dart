@@ -737,6 +737,7 @@ class _MyHomePageState extends State<MyHomePage> {
               title: Text(context.loc.images_found),
               content: SizedBox(
                 width: double.maxFinite,
+                height: 350,
                 child: Stack(
                   children: [
                     // Visualizzazione delle immagini
@@ -753,11 +754,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             },
                             child: Align(
                               alignment: Alignment.center,
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                // Larghezza dell'immagine
+                              child: Container(
+                                width: MediaQuery.of(context)
+                                    .size
+                                    .width, // Larghezza dell'immagine
                                 height: 200,
-                                // Altezza dell'immagine (puoi modificarla come preferisci)
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(
                                       10), // Bordo arrotondato per l'immagine
