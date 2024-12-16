@@ -31,7 +31,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late final FirebaseCloudStorage _imagesService;
-  final PageController _pageController = PageController();
   final TextEditingController _textEditingController = TextEditingController();
   final HistoryController _historyController = HistoryController();
   final NetworkController _networkController = NetworkController();
@@ -61,12 +60,11 @@ class _MyHomePageState extends State<MyHomePage> {
     _language = SharedPreferencesSingleton.instance.getLanguage() ?? "it";
   }
 
-  Future<void> _generateImages() async {
+  Future<void> _generateImages(BuildContext context) async {
     final prompt = _textEditingController.text;
     if (prompt.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Inserisci un testo per generare immagini")),
+        SnackBar(content: Text(context.loc.insert_text)),
       );
       return;
     }
@@ -95,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _historyController.addToHistory(prompt);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Errore nella generazione delle immagini: $e")),
+        SnackBar(content: Text("${context.loc.error_gen_image}: $e")),
       );
     } finally {
       setState(() {
@@ -132,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _historyController.addToHistory(prompt);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Errore nella generazione delle immagini: $e")),
+        SnackBar(content: Text("${context.loc.error_gen_image}: $e")),
       );
     } finally {
       setState(() {
@@ -256,7 +254,7 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text('Generazione immagine AI'),
+          title: Text(context.loc.genai),
           content: SingleChildScrollView(
             child: ConstrainedBox(
               constraints: BoxConstraints(
@@ -333,16 +331,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             } catch (e) {
                               contentNotifier.value = Center(
                                 child: Text(
-                                  'Errore durante la generazione',
+                                  context.loc.error_gen_image,
                                   style: TextStyle(color: Colors.red),
                                 ),
                               );
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content:
-                                      Text('Inserisci qualcosa da generare')),
+                              SnackBar(content: Text(context.loc.genai_insert)),
                             );
                           }
                         },
@@ -351,7 +347,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      hintText: 'Cosa vuoi generare...',
+                      hintText: context.loc.genai_question,
                     ),
                   ),
                 ],
@@ -364,7 +360,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 // Annulla la generazione e non sostituire l'immagine
                 Navigator.of(dialogContext).pop();
               },
-              child: Text('Chiudi'),
+              child: Text(context.loc.close),
             ),
             TextButton(
               onPressed: () {
@@ -446,7 +442,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                     isRepeatingAnimation: false,
                                     animatedTexts: [
                                       TypewriterAnimatedText(
-                                        "Ho generato ${generatedImages.length} immagini",
+                                        context.loc.images_generated.replaceAll(
+                                            "%d",
+                                            generatedImages.length.toString()),
                                         speed:
                                             const Duration(milliseconds: 150),
                                       ),
@@ -646,7 +644,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       onPressed: () {
                         // Rimuove il focus dal TextField e chiude la tastiera
                         FocusScope.of(context).requestFocus(FocusNode());
-                        _generateImages();
+                        _generateImages(context);
                       },
                       icon: const Icon(Icons.send, color: Color(0xFF60A561)),
                     ),
@@ -736,7 +734,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return StatefulBuilder(
           builder: (BuildContext context, setState) {
             return AlertDialog(
-              title: Text('Immagini Trovate'),
+              title: Text(context.loc.images_found),
               content: SizedBox(
                 width: double.maxFinite,
                 child: Stack(
@@ -855,7 +853,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     Navigator.of(context)
                         .pop(); // Chiude il pop-up senza selezione
                   },
-                  child: Text('Chiudi'),
+                  child: Text(context.loc.close),
                 ),
               ],
             );

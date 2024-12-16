@@ -219,6 +219,226 @@ class S {
       args: [],
     );
   }
+
+  /// `Parental Control`
+  String get parental_control {
+    return Intl.message(
+      'Parental Control',
+      name: 'parental_control',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Protect your loved ones`
+  String get parental_control_1 {
+    return Intl.message(
+      'Protect your loved ones',
+      name: 'parental_control_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `With this feature you can decide whether to show explicit images on themes such as sex and violence`
+  String get parental_control_2 {
+    return Intl.message(
+      'With this feature you can decide whether to show explicit images on themes such as sex and violence',
+      name: 'parental_control_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AI Style`
+  String get ai_style {
+    return Intl.message(
+      'AI Style',
+      name: 'ai_style',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose your style`
+  String get ai_style_1 {
+    return Intl.message(
+      'Choose your style',
+      name: 'ai_style_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `With this feature you can choose the style you prefer for the generated images`
+  String get ai_style_2 {
+    return Intl.message(
+      'With this feature you can choose the style you prefer for the generated images',
+      name: 'ai_style_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `pictogram`
+  String get ai_style_pictogram {
+    return Intl.message(
+      'pictogram',
+      name: 'ai_style_pictogram',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `realism`
+  String get ai_style_realism {
+    return Intl.message(
+      'realism',
+      name: 'ai_style_realism',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `cartoon`
+  String get ai_style_cartoon {
+    return Intl.message(
+      'cartoon',
+      name: 'ai_style_cartoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chat language`
+  String get chat_language {
+    return Intl.message(
+      'Chat language',
+      name: 'chat_language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Break down language barriers`
+  String get chat_language_1 {
+    return Intl.message(
+      'Break down language barriers',
+      name: 'chat_language_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `With this feature you can select the language with which to communicate via text`
+  String get chat_language_2 {
+    return Intl.message(
+      'With this feature you can select the language with which to communicate via text',
+      name: 'chat_language_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Italian`
+  String get chat_language_it {
+    return Intl.message(
+      'Italian',
+      name: 'chat_language_it',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `English`
+  String get chat_language_en {
+    return Intl.message(
+      'English',
+      name: 'chat_language_en',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the text to generate images`
+  String get insert_text {
+    return Intl.message(
+      'Enter the text to generate images',
+      name: 'insert_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error in generating images`
+  String get error_gen_image {
+    return Intl.message(
+      'Error in generating images',
+      name: 'error_gen_image',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AI Image Generation`
+  String get genai {
+    return Intl.message(
+      'AI Image Generation',
+      name: 'genai',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter something to generate`
+  String get genai_insert {
+    return Intl.message(
+      'Enter something to generate',
+      name: 'genai_insert',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What do you want to generate...`
+  String get genai_question {
+    return Intl.message(
+      'What do you want to generate...',
+      name: 'genai_question',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get close {
+    return Intl.message(
+      'Close',
+      name: 'close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Images found`
+  String get images_found {
+    return Intl.message(
+      'Images found',
+      name: 'images_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I generated %d images`
+  String get images_generated {
+    return Intl.message(
+      'I generated %d images',
+      name: 'images_generated',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
