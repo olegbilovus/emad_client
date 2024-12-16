@@ -22,16 +22,43 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "ai_style": MessageLookupByLibrary.simpleMessage("AI Style"),
+        "ai_style_1": MessageLookupByLibrary.simpleMessage("Choose your style"),
+        "ai_style_2": MessageLookupByLibrary.simpleMessage(
+            "With this feature you can choose the style you prefer for the generated images"),
+        "ai_style_cartoon": MessageLookupByLibrary.simpleMessage("cartoon"),
+        "ai_style_pictogram": MessageLookupByLibrary.simpleMessage("pictogram"),
+        "ai_style_realism": MessageLookupByLibrary.simpleMessage("realism"),
         "app_title": MessageLookupByLibrary.simpleMessage("CAApp"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "chat_language": MessageLookupByLibrary.simpleMessage("Chat language"),
+        "chat_language_1": MessageLookupByLibrary.simpleMessage(
+            "Break down language barriers"),
+        "chat_language_2": MessageLookupByLibrary.simpleMessage(
+            "With this feature you can select the language with which to communicate via text"),
+        "chat_language_en": MessageLookupByLibrary.simpleMessage("English"),
+        "chat_language_it": MessageLookupByLibrary.simpleMessage("Italian"),
+        "close": MessageLookupByLibrary.simpleMessage("Close"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "delete_content": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to delete?"),
+        "error_gen_image":
+            MessageLookupByLibrary.simpleMessage("Error in generating images"),
+        "genai": MessageLookupByLibrary.simpleMessage("AI Image Generation"),
+        "genai_insert":
+            MessageLookupByLibrary.simpleMessage("Enter something to generate"),
+        "genai_question": MessageLookupByLibrary.simpleMessage(
+            "What do you want to generate..."),
         "history": MessageLookupByLibrary.simpleMessage("History"),
         "image_uploaded":
             MessageLookupByLibrary.simpleMessage("Image uploaded"),
         "image_uploaded_keyword": MessageLookupByLibrary.simpleMessage(
             "Image uploaded for the word "),
+        "images_found": MessageLookupByLibrary.simpleMessage("Images found"),
+        "images_generated":
+            MessageLookupByLibrary.simpleMessage("I generated %d images"),
+        "insert_text": MessageLookupByLibrary.simpleMessage(
+            "Enter the text to generate images"),
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
         "logout_content": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to logout?"),
@@ -42,6 +69,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No Internet connection"),
         "no_network_q": MessageLookupByLibrary.simpleMessage(
             "Are you connected to the network?"),
+        "parental_control":
+            MessageLookupByLibrary.simpleMessage("Parental Control"),
+        "parental_control_1":
+            MessageLookupByLibrary.simpleMessage("Protect your loved ones"),
+        "parental_control_2": MessageLookupByLibrary.simpleMessage(
+            "With this feature you can decide whether to show explicit images on themes such as sex and violence"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "sign_in_sign_up":
             MessageLookupByLibrary.simpleMessage("Sign in / Sign up"),

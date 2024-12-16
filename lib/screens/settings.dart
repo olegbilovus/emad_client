@@ -1,8 +1,9 @@
+import 'dart:developer' as dev;
+
 import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/services/shared_preferences_singleton.dart';
 import 'package:emad_client/widget/custom_appbar_back.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as dev;
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -14,6 +15,7 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   bool _flagSex = false;
   bool _flagViolence = false;
+
   // 1 - Pittogrammi
   // 2 - Realismo
   // 3 - Cartoon
@@ -89,7 +91,7 @@ class _SettingsState extends State<Settings> {
             Row(
               children: [
                 Text(
-                  "Parental control",
+                  context.loc.parental_control,
                   style: TextStyle(fontSize: 20),
                 ),
                 Padding(
@@ -101,8 +103,8 @@ class _SettingsState extends State<Settings> {
                     ),
                     onTap: () {
                       mostraBottomSheet(
-                          "Proteggi i tuoi cari",
-                          "Con questa funzionalità puoi decidere se mostrare o meno immagini esplicite su temi come il sesso e la violenza",
+                          context.loc.parental_control_1,
+                          context.loc.parental_control_2,
                           "assets/icons/kid.png");
                     },
                   ),
@@ -139,7 +141,7 @@ class _SettingsState extends State<Settings> {
             Row(
               children: [
                 Text(
-                  "Stile IA",
+                  context.loc.ai_style,
                   style: TextStyle(fontSize: 20),
                 ),
                 GestureDetector(
@@ -152,8 +154,8 @@ class _SettingsState extends State<Settings> {
                   ),
                   onTap: () {
                     mostraBottomSheet(
-                      "Scegli il tuo stile",
-                      "Con questa funzionalità puoi selezionare lo stile che l'Intelligenza Artificiale utilizzerà per creare le tue immagini",
+                      context.loc.ai_style_1,
+                      context.loc.ai_style_2,
                       "assets/icons/ai.png",
                     );
                   },
@@ -163,8 +165,8 @@ class _SettingsState extends State<Settings> {
             Column(
               children: [
                 ListTile(
-                  title: const Text(
-                    'pittogrammi',
+                  title: Text(
+                    context.loc.ai_style_pictogram,
                     style: TextStyle(fontSize: 16),
                   ),
                   leading: Radio<int>(
@@ -181,8 +183,8 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 ListTile(
-                  title: const Text(
-                    'realismo',
+                  title: Text(
+                    context.loc.ai_style_realism,
                     style: TextStyle(fontSize: 16),
                   ),
                   leading: Radio<int>(
@@ -199,7 +201,8 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 ListTile(
-                  title: const Text('cartoon', style: TextStyle(fontSize: 16)),
+                  title: Text(context.loc.ai_style_cartoon,
+                      style: TextStyle(fontSize: 16)),
                   leading: Radio<int>(
                     value: 3,
                     groupValue: _selectedValue,
@@ -234,7 +237,7 @@ class _SettingsState extends State<Settings> {
                   child: Row(
                     children: [
                       Text(
-                        "Lingua della chat",
+                        context.loc.chat_language,
                         style: TextStyle(fontSize: 20),
                       ),
                       GestureDetector(
@@ -247,8 +250,8 @@ class _SettingsState extends State<Settings> {
                         ),
                         onTap: () {
                           mostraBottomSheet(
-                            "Abbattiamo le barriere linguistiche",
-                            "Con questa funzionalità puoi selezionare la lingua con cui comunicare via testo",
+                            context.loc.chat_language_1,
+                            context.loc.chat_language_2,
                             "assets/icons/languages.png",
                           );
                         },
@@ -274,7 +277,7 @@ class _SettingsState extends State<Settings> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
-                          "Italiano",
+                          context.loc.chat_language_it,
                           style: TextStyle(fontSize: 16),
                         ),
                       ),
@@ -304,7 +307,7 @@ class _SettingsState extends State<Settings> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
-                          "Inglese",
+                          context.loc.chat_language_en,
                           style: TextStyle(fontSize: 16),
                         ),
                       ),
