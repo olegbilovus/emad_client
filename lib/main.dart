@@ -52,8 +52,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: colorScheme,
         useMaterial3: true,
+        scaffoldBackgroundColor: Colors.white,
         appBarTheme: AppBarTheme(
-            scrolledUnderElevation: 0, backgroundColor: colorScheme.surface),
+            scrolledUnderElevation: 0, backgroundColor: Colors.white),
       ),
       home: const MyHomePage(title: 'CAApp'),
       //qua definiamo le pagine dell'app

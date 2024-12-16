@@ -30,7 +30,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late final FirebaseCloudStorage _imagesService;
-  final PageController _pageController = PageController();
   final TextEditingController _textEditingController = TextEditingController();
   final HistoryController _historyController = HistoryController();
   final NetworkController _networkController = NetworkController();
@@ -735,9 +734,14 @@ class _MyHomePageState extends State<MyHomePage> {
         return StatefulBuilder(
           builder: (BuildContext context, setState) {
             return AlertDialog(
-              title: Text('Immagini Trovate'),
+              title: Center(
+                  child: Text(
+                'Immagini Trovate',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )),
               content: SizedBox(
                 width: double.maxFinite,
+                height: 350,
                 child: Stack(
                   children: [
                     // Visualizzazione delle immagini
@@ -758,8 +762,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 width: MediaQuery.of(context)
                                     .size
                                     .width, // Larghezza dell'immagine
-                                height:
-                                    200, // Altezza dell'immagine (puoi modificarla come preferisci)
+                                height: 200,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(
                                       10), // Bordo arrotondato per l'immagine
