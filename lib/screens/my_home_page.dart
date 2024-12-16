@@ -734,7 +734,11 @@ class _MyHomePageState extends State<MyHomePage> {
         return StatefulBuilder(
           builder: (BuildContext context, setState) {
             return AlertDialog(
-              title: Text(context.loc.images_found),
+              title: Center(
+                  child: Text(
+                context.loc.images_found,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )),
               content: SizedBox(
                 width: double.maxFinite,
                 height: 350,
