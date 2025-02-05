@@ -29,12 +29,19 @@ dependencies:
   image_picker: ^1.1.2
   http: ^1.2.2
   provider: ^6.1.2
+  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.3
+  
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/img/caapp_logo.jpg"
 
-  flutter_lints: ^5.0.0
+  flutter_lints: ^5.0.0 
   build_runner: ^2.4.11
 
 flutter:
