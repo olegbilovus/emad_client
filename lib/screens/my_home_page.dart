@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer' as dev;
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:emad_client/controller/history_controller.dart';
 import 'package:emad_client/controller/image_generator_controller.dart';
@@ -7,15 +8,19 @@ import 'package:emad_client/controller/network_controller.dart';
 import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/model/image_data.dart';
 import 'package:emad_client/screens/image_keyword.dart';
-import 'package:emad_client/services/pdf_generator.dart';
+import 'package:emad_client/services/pdf/pdf_generator.dart';
+import 'package:emad_client/services/pdf/save_pdf.dart';
 import 'package:emad_client/services/shared_preferences_singleton.dart';
 import 'package:emad_client/widget/custom_appbar.dart';
 import 'package:emad_client/widget/dialogs/generic_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 import '../services/cloud/firebase_cloud_storage.dart';
@@ -45,8 +50,8 @@ class _MyHomePageState extends State<MyHomePage> {
   late String _language;
   late PdfGenerator _pdfGenerator;
   String _prompt = "";
-  bool _animationFinished =
-      false; // Variabile per tracciare la fine dell'animazione
+
+  bool isGeneratingPDF = false;
 
   @override
   void initState() {
@@ -216,7 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.grey.withOpacity(0.2),
+                                    color: Colors.grey.withValues(alpha: 0.2),
                                     spreadRadius: 1,
                                     blurRadius: 5,
                                     offset: const Offset(0, 2),
@@ -427,6 +432,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         ? SizedBox(
                             width: 250.0,
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 ShaderMask(
                                   shaderCallback: (bounds) =>
@@ -449,11 +456,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ),
                                       child: AnimatedTextKit(
                                         isRepeatingAnimation: false,
-                                        onFinished: () {
-                                          setState(() {
-                                            _animationFinished = true;
-                                          });
-                                        },
                                         animatedTexts: [
                                           TypewriterAnimatedText(
                                             context.loc.images_generated
@@ -469,20 +471,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ),
                                   ),
                                 ),
-                                if (_animationFinished)
-                                  GestureDetector(
-                                    onTap: () {
-                                      _pdfGenerator
-                                          .setGeneratedImages(generatedImages);
-                                      _pdfGenerator.setSentence(_prompt);
-                                      _pdfGenerator.setFilename();
-                                      _pdfGenerator.generatePDF();
-                                    },
-                                    child: Icon(
-                                      Icons.picture_as_pdf,
-                                      color: Colors.red,
-                                    ),
-                                  )
                               ],
                             ),
                           )
@@ -587,7 +575,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   SizedBox(
                                     height:
-                                        10, // Distanza tra l'immagine e le icone
+                                        5, // Distanza tra l'immagine e le icone
                                   ),
                                   Row(
                                     mainAxisAlignment:
@@ -633,8 +621,79 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
 
+              if (generatedImages.isNotEmpty)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        setState(() {
+                          isGeneratingPDF = true;
+                        });
+                        var bytes = await getPDFBytes();
+                        setState(() {
+                          isGeneratingPDF = false;
+                        });
+                        await Printing.layoutPdf(
+                          onLayout: (PdfPageFormat format) async => bytes,
+                        );
+                      },
+                      child: isGeneratingPDF
+                          ? pdfLoading()
+                          : Icon(
+                              Icons.print,
+                              color: Colors.grey,
+                              size: 40,
+                            ),
+                    ),
+                    SizedBox(width: 40),
+                    if (kIsWeb)
+                      GestureDetector(
+                        onTap: () async {
+                          setState(() {
+                            isGeneratingPDF = true;
+                          });
+                          var bytes = await getPDFBytes();
+                          setState(() {
+                            isGeneratingPDF = false;
+                          });
+
+                          SavePDFHelper.savePDF(bytes, _pdfGenerator.fileName);
+                        },
+                        child: isGeneratingPDF
+                            ? pdfLoading()
+                            : Icon(
+                                Icons.download,
+                                color: Colors.green,
+                                size: 40,
+                              ),
+                      ),
+                    if (!kIsWeb)
+                      GestureDetector(
+                        onTap: () async {
+                          setState(() {
+                            isGeneratingPDF = true;
+                          });
+                          var bytes = await getPDFBytes();
+                          setState(() {
+                            isGeneratingPDF = false;
+                          });
+                          Printing.sharePdf(
+                              bytes: bytes, filename: _pdfGenerator.fileName);
+                        },
+                        child: isGeneratingPDF
+                            ? pdfLoading()
+                            : Icon(
+                                Icons.share,
+                                color: Colors.green,
+                                size: 40,
+                              ),
+                      ),
+                  ],
+                ),
+              SizedBox(height: 20),
+
               // Campo di input
-              const SizedBox(height: 30.0),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
                 child: TextField(
@@ -913,5 +972,22 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       });
     }
+  }
+
+  Future<Uint8List> getPDFBytes() async {
+    _pdfGenerator.setGeneratedImages(generatedImages);
+    _pdfGenerator.setSentence(_prompt);
+    _pdfGenerator.setFilename();
+    var bytes = await _pdfGenerator.generatePDF();
+
+    return bytes;
+  }
+
+  SizedBox pdfLoading() {
+    return SizedBox(
+      height: 40,
+      width: 40,
+      child: CircularProgressIndicator(),
+    );
   }
 }

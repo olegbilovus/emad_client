@@ -5,7 +5,6 @@ import 'package:emad_client/model/image_data.dart';
 import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 
 class PdfGenerator {
   late List<ImageData> generatedImages;
@@ -33,7 +32,7 @@ class PdfGenerator {
     this.fileName = "${sentence}_PECS.pdf";
   }
 
-  Future<void> generatePDF() async {
+  Future<Uint8List> generatePDF() async {
     _initializePdf(); // Crea un nuovo documento PDF ogni volta
 
 // Carica tutte le immagini prima di costruire il PDF
@@ -75,11 +74,8 @@ class PdfGenerator {
       dev.log("Errore: nessuna immagine da aggiungere al PDF.");
     }
 
-// Salva il documento PDF
     final Uint8List bytes = await pdf.save();
-    await Printing.layoutPdf(
-      onLayout: (PdfPageFormat format) async => bytes,
-    );
+    return bytes;
   }
 
 // Metodo per scaricare un'immagine da URL e convertirla in PDF
