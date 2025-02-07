@@ -2,7 +2,6 @@ import 'dart:developer' as dev;
 import 'dart:typed_data';
 
 import 'package:emad_client/model/image_data.dart';
-import 'package:emad_client/services/pdf/save_pdf.dart';
 import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -13,8 +12,6 @@ class PdfGenerator {
   late String sentence;
   late String fileName;
   late pw.Document pdf; // Viene creata un'istanza dinamica di `pw.Document`
-
-  SavePDFHelper savePDFHelper = SavePDFHelper();
 
   PdfGenerator() {
     _initializePdf(); // Inizializza l'istanza di PDF all'avvio
