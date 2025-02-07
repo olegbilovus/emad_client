@@ -7,7 +7,7 @@ import 'package:emad_client/controller/network_controller.dart';
 import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/model/image_data.dart';
 import 'package:emad_client/screens/image_keyword.dart';
-import 'package:emad_client/services/pdf_generator.dart';
+import 'package:emad_client/services/pdf/pdf_generator.dart';
 import 'package:emad_client/services/shared_preferences_singleton.dart';
 import 'package:emad_client/widget/custom_appbar.dart';
 import 'package:emad_client/widget/dialogs/generic_dialog.dart';

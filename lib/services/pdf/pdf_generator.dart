@@ -1,21 +1,20 @@
-import 'dart:io';
+import 'dart:developer' as dev;
 import 'dart:typed_data';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:path_provider/path_provider.dart';
+
+import 'package:emad_client/model/image_data.dart';
+import 'package:emad_client/services/pdf/save_pdf.dart';
+import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:permission_handler/permission_handler.dart';
-import 'package:emad_client/model/image_data.dart';
-import 'dart:html' as web;
-import 'package:http/http.dart' as http;
-import 'dart:typed_data';
-import 'dart:developer' as dev;
+import 'package:printing/printing.dart';
 
 class PdfGenerator {
   late List<ImageData> generatedImages;
   late String sentence;
   late String fileName;
   late pw.Document pdf; // Viene creata un'istanza dinamica di `pw.Document`
+
+  SavePDFHelper savePDFHelper = SavePDFHelper();
 
   PdfGenerator() {
     _initializePdf(); // Inizializza l'istanza di PDF all'avvio
@@ -40,7 +39,7 @@ class PdfGenerator {
   Future<void> generatePDF() async {
     _initializePdf(); // Crea un nuovo documento PDF ogni volta
 
-    // Carica tutte le immagini prima di costruire il PDF
+// Carica tutte le immagini prima di costruire il PDF
     final List<pw.Widget> imageWidgets = await Future.wait(
       generatedImages.map((imageData) async {
         final pw.Widget imageWidget = await _buildImage(imageData.url);
@@ -61,14 +60,14 @@ class PdfGenerator {
     );
 
     if (imageWidgets.isNotEmpty) {
-      // Aggiungi una pagina per ogni immagine
+// Aggiungi una pagina per ogni immagine
       for (var widget in imageWidgets) {
         pdf.addPage(
           pw.Page(
             pageFormat: PdfPageFormat.a4,
             build: (pw.Context context) {
               return pw.Center(
-                // Centra il contenuto sulla pagina
+// Centra il contenuto sulla pagina
                 child: widget,
               );
             },
@@ -79,23 +78,14 @@ class PdfGenerator {
       dev.log("Errore: nessuna immagine da aggiungere al PDF.");
     }
 
-    // Salva il documento PDF
+// Salva il documento PDF
     final Uint8List bytes = await pdf.save();
-
-    if (kIsWeb) {
-      final blob = web.Blob([bytes], 'application/pdf');
-      final url = web.Url.createObjectUrlFromBlob(blob);
-      // ignore: unused_local_variable
-      final anchor = web.AnchorElement(href: url)
-        ..setAttribute("download", fileName)
-        ..click();
-      web.Url.revokeObjectUrl(url);
-    } else {
-      await _savePdfToDownloads(bytes);
-    }
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => bytes,
+    );
   }
 
-  // Metodo per scaricare un'immagine da URL e convertirla in PDF
+// Metodo per scaricare un'immagine da URL e convertirla in PDF
   Future<pw.Widget> _buildImage(String imageUrl) async {
     try {
       dev.log("Caricamento immagine da URL: $imageUrl");
@@ -114,36 +104,5 @@ class PdfGenerator {
       dev.log("Errore nell'ottenere l'immagine: $e");
       return pw.Text("Errore nell'ottenere l'immagine.");
     }
-  }
-
-  Future<void> _savePdfToDownloads(Uint8List bytes) async {
-    if (await _requestStoragePermission()) {
-      Directory? downloadsDir;
-
-      if (Platform.isAndroid) {
-        downloadsDir = Directory('/storage/emulated/0/Download');
-      } else if (Platform.isIOS) {
-        downloadsDir = await getApplicationDocumentsDirectory();
-      }
-
-      if (downloadsDir != null) {
-        final filePath = '${downloadsDir.path}/$fileName';
-        final File file = File(filePath);
-        await file.writeAsBytes(bytes);
-        dev.log("PDF salvato in: $filePath");
-      } else {
-        dev.log("Errore: impossibile trovare la cartella Download.");
-      }
-    } else {
-      dev.log("Permessi di scrittura negati.");
-    }
-  }
-
-  Future<bool> _requestStoragePermission() async {
-    if (Platform.isAndroid) {
-      final status = await Permission.storage.request();
-      return status.isGranted;
-    }
-    return true;
   }
 }
