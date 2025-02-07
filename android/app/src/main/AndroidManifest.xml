@@ -1,10 +1,12 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:label="emad_client"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         android:localeConfig="@xml/locales_config">
+       
         <activity
             android:screenOrientation="portrait"
             android:name=".MainActivity"
@@ -45,4 +47,5 @@
             <data android:mimeType="text/plain"/>
         </intent>
     </queries>
+
 </manifest>

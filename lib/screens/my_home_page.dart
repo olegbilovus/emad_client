@@ -8,14 +8,19 @@ import 'package:emad_client/controller/network_controller.dart';
 import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/model/image_data.dart';
 import 'package:emad_client/screens/image_keyword.dart';
+import 'package:emad_client/services/pdf/pdf_generator.dart';
+import 'package:emad_client/services/pdf/save_pdf.dart';
 import 'package:emad_client/services/shared_preferences_singleton.dart';
 import 'package:emad_client/widget/custom_appbar.dart';
 import 'package:emad_client/widget/dialogs/generic_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 import '../services/cloud/firebase_cloud_storage.dart';
@@ -43,6 +48,10 @@ class _MyHomePageState extends State<MyHomePage> {
   bool violence = false;
   bool sex = false;
   late String _language;
+  late PdfGenerator _pdfGenerator;
+  String _prompt = "";
+
+  bool isGeneratingPDF = false;
 
   @override
   void initState() {
@@ -50,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _imagesService = FirebaseCloudStorage();
     _speechToText.initialize();
     _historyController.init();
+    _pdfGenerator = PdfGenerator();
   }
 
   void _checkPreferences() {
@@ -62,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _generateImages(BuildContext context) async {
     final prompt = _textEditingController.text;
+    _prompt = prompt;
     if (prompt.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.loc.insert_text)),
@@ -105,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _generateImagesFromHistory(int index) async {
     //prendi il testo dalla cronologia
     final prompt = _historyController.getHistory().elementAt(index);
+    _prompt = prompt;
 
     setState(() {
       isLoadingImages = true;
@@ -209,7 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.grey.withOpacity(0.2),
+                                    color: Colors.grey.withValues(alpha: 0.2),
                                     spreadRadius: 1,
                                     blurRadius: 5,
                                     offset: const Offset(0, 2),
@@ -416,42 +428,50 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: double.infinity,
                       height: 20,
                     ),
-
                     generatedImages.isNotEmpty
                         ? SizedBox(
                             width: 250.0,
-                            child: ShaderMask(
-                              shaderCallback: (bounds) => const LinearGradient(
-                                colors: [
-                                  Colors.black,
-                                  Color(0xFF60A561),
-                                  Color(0xFF60A561),
-                                  Color(0xFF305331),
-                                  Color(0xFF305331),
-                                ],
-                              ).createShader(bounds),
-                              blendMode: BlendMode.srcIn,
-                              child: Center(
-                                // Aggiungi Center per centrare il testo
-                                child: DefaultTextStyle(
-                                  style: const TextStyle(
-                                    fontSize: 20.0, // Dimensione più grande
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  child: AnimatedTextKit(
-                                    isRepeatingAnimation: false,
-                                    animatedTexts: [
-                                      TypewriterAnimatedText(
-                                        context.loc.images_generated.replaceAll(
-                                            "%d",
-                                            generatedImages.length.toString()),
-                                        speed:
-                                            const Duration(milliseconds: 150),
-                                      ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ShaderMask(
+                                  shaderCallback: (bounds) =>
+                                      const LinearGradient(
+                                    colors: [
+                                      Colors.black,
+                                      Color(0xFF60A561),
+                                      Color(0xFF60A561),
+                                      Color(0xFF305331),
+                                      Color(0xFF305331),
                                     ],
+                                  ).createShader(bounds),
+                                  blendMode: BlendMode.srcIn,
+                                  child: Center(
+                                    // Aggiungi Center per centrare il testo
+                                    child: DefaultTextStyle(
+                                      style: const TextStyle(
+                                        fontSize: 20.0, // Dimensione più grande
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      child: AnimatedTextKit(
+                                        isRepeatingAnimation: false,
+                                        animatedTexts: [
+                                          TypewriterAnimatedText(
+                                            context.loc.images_generated
+                                                .replaceAll(
+                                                    "%d",
+                                                    generatedImages.length
+                                                        .toString()),
+                                            speed: const Duration(
+                                                milliseconds: 150),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
                           )
                         : const SizedBox(),
@@ -555,7 +575,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   SizedBox(
                                     height:
-                                        10, // Distanza tra l'immagine e le icone
+                                        5, // Distanza tra l'immagine e le icone
                                   ),
                                   Row(
                                     mainAxisAlignment:
@@ -601,8 +621,79 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
 
+              if (generatedImages.isNotEmpty)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        setState(() {
+                          isGeneratingPDF = true;
+                        });
+                        var bytes = await getPDFBytes();
+                        setState(() {
+                          isGeneratingPDF = false;
+                        });
+                        await Printing.layoutPdf(
+                          onLayout: (PdfPageFormat format) async => bytes,
+                        );
+                      },
+                      child: isGeneratingPDF
+                          ? pdfLoading()
+                          : Icon(
+                              Icons.print,
+                              color: Colors.grey,
+                              size: 40,
+                            ),
+                    ),
+                    SizedBox(width: 40),
+                    if (kIsWeb)
+                      GestureDetector(
+                        onTap: () async {
+                          setState(() {
+                            isGeneratingPDF = true;
+                          });
+                          var bytes = await getPDFBytes();
+                          setState(() {
+                            isGeneratingPDF = false;
+                          });
+
+                          SavePDFHelper.savePDF(bytes, _pdfGenerator.fileName);
+                        },
+                        child: isGeneratingPDF
+                            ? pdfLoading()
+                            : Icon(
+                                Icons.download,
+                                color: Colors.green,
+                                size: 40,
+                              ),
+                      ),
+                    if (!kIsWeb)
+                      GestureDetector(
+                        onTap: () async {
+                          setState(() {
+                            isGeneratingPDF = true;
+                          });
+                          var bytes = await getPDFBytes();
+                          setState(() {
+                            isGeneratingPDF = false;
+                          });
+                          Printing.sharePdf(
+                              bytes: bytes, filename: _pdfGenerator.fileName);
+                        },
+                        child: isGeneratingPDF
+                            ? pdfLoading()
+                            : Icon(
+                                Icons.share,
+                                color: Colors.green,
+                                size: 40,
+                              ),
+                      ),
+                  ],
+                ),
+              SizedBox(height: 20),
+
               // Campo di input
-              const SizedBox(height: 30.0),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
                 child: TextField(
@@ -881,5 +972,22 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       });
     }
+  }
+
+  Future<Uint8List> getPDFBytes() async {
+    _pdfGenerator.setGeneratedImages(generatedImages);
+    _pdfGenerator.setSentence(_prompt);
+    _pdfGenerator.setFilename();
+    var bytes = await _pdfGenerator.generatePDF();
+
+    return bytes;
+  }
+
+  SizedBox pdfLoading() {
+    return SizedBox(
+      height: 40,
+      width: 40,
+      child: CircularProgressIndicator(),
+    );
   }
 }

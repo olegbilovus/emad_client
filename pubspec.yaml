@@ -29,6 +29,10 @@ dependencies:
   image_picker: ^1.1.2
   http: ^1.2.2
   provider: ^6.1.2
+  pdf: ^3.11.2
+  path_provider: ^2.1.5
+  permission_handler: ^11.3.1
+  printing: ^5.14.0
   
 
 dev_dependencies:
