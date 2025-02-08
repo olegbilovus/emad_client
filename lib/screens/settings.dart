@@ -15,6 +15,7 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   bool _flagSex = false;
   bool _flagViolence = false;
+  bool _textCorrection = false;
 
   // 1 - Pittogrammi
   // 2 - Realismo
@@ -37,6 +38,8 @@ class _SettingsState extends State<Settings> {
       _selectedValue = SharedPreferencesSingleton.instance.getAIstyle() ?? 1;
       _selectedLanguage =
           SharedPreferencesSingleton.instance.getLanguage() ?? "it";
+      _textCorrection =
+          SharedPreferencesSingleton.instance.getTextCorrectionFlag() ?? false;
     });
   }
 
@@ -318,7 +321,55 @@ class _SettingsState extends State<Settings> {
                         ),
                     ],
                   ),
-                )
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Divider(
+                  height: 1,
+                  color: Colors.grey,
+                  thickness: 1.0,
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      context.loc.ai_text_correction,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: GestureDetector(
+                        child: Icon(
+                          Icons.info_outline,
+                          color: Color(0xFF60A561),
+                        ),
+                        onTap: () {
+                          mostraBottomSheet(
+                              context.loc.ai_text_correction_1,
+                              context.loc.ai_text_correction_2,
+                              "assets/icons/Notes-bro.png");
+                        },
+                      ),
+                    ),
+                    Spacer(),
+                    Switch(
+                      // This bool value toggles the switch.
+                      value: _textCorrection,
+                      activeColor: Color(0xFF60A561),
+                      onChanged: (bool value) {
+                        // This is called when the user toggles the switch.
+                        setState(() {
+                          _textCorrection = value;
+                          SharedPreferencesSingleton.instance
+                              .setTextCorrectionFlag(value);
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ],

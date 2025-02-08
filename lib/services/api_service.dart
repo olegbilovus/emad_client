@@ -1,5 +1,6 @@
-import 'package:http/http.dart' as http;
 import 'dart:developer' as dev;
+
+import 'package:http/http.dart' as http;
 
 class ApiService {
   //url del backend
@@ -11,10 +12,10 @@ class ApiService {
   ApiService();
 
   //metodo che chiama il servizio di generazione delle immagini di Arasaac
-  Future<http.Response> getImages(
-      bool sex, bool violence, String prompt, String lan) async {
+  Future<http.Response> getImages(bool sex, bool violence, String prompt,
+      String lan, bool textCorrection) async {
     String path =
-        "/v1/images/?sex=$sex&violence=$violence&text=$prompt&language=$lan";
+        "/v1/images/?sex=$sex&violence=$violence&text=$prompt&language=$lan&fix_sentence=$textCorrection";
     dev.log("L'url della richiesta GET è: ${url + path}");
     return http.get(Uri.parse(url + path));
   }

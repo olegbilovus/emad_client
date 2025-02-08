@@ -15,6 +15,7 @@ class SharedPreferencesSingleton {
   final _violenceKey = "violence";
   final _aiStyleKey = "AIstyle";
   final _languageKey = "language";
+  final _textCorrectionKey = "textCorrection";
 
   Future<void> init() async {
     _prefs ??= await SharedPreferences.getInstance();
@@ -97,5 +98,13 @@ class SharedPreferencesSingleton {
 
   String? getLanguage() {
     return _prefs?.getString(_languageKey);
+  }
+
+  Future<void> setTextCorrectionFlag(bool flag) async {
+    await _prefs?.setBool(_textCorrectionKey, flag);
+  }
+
+  bool? getTextCorrectionFlag() {
+    return _prefs?.getBool(_textCorrectionKey);
   }
 }
