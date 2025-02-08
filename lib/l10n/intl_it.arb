@@ -38,5 +38,8 @@
   "genai_question": "Cosa vuoi generare...",
   "close": "Chiudi",
   "images_found": "Immagini trovate",
-  "images_generated": "Ho generato %d immagini"
+  "images_generated": "Ho generato %d immagini",
+  "ai_text_correction": "Correzione testo AI",
+  "ai_text_correction_1": "Correggi il testo",
+  "ai_text_correction_2": "Con questa funzionalità puoi correggere il testo che hai inserito"
 }

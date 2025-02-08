@@ -1,35 +1,41 @@
 import 'dart:convert';
-import 'package:emad_client/costants/ai_styles.dart';
-import 'package:emad_client/services/api_service.dart';
-import 'package:emad_client/model/image_data.dart';
 import 'dart:developer' as dev;
 
+import 'package:emad_client/costants/ai_styles.dart';
+import 'package:emad_client/model/image_data.dart';
+import 'package:emad_client/services/api_service.dart';
 import 'package:flutter/material.dart';
 
 class ImageGeneratorController {
   final ApiService _apiService = ApiService();
 
-  Future<List<ImageData>> generateImagesFromPrompt({
-    required bool violence,
-    required bool sex,
-    required String prompt,
-    required String language,
-  }) async {
-    final response =
-        await _apiService.getImages(sex, violence, prompt, language);
+  Future<(List<ImageData>, String?)> generateImagesFromPrompt(
+      {required bool violence,
+      required bool sex,
+      required String prompt,
+      required String language,
+      required bool textCorrection}) async {
+    final response = await _apiService.getImages(
+        sex, violence, prompt, language, textCorrection);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final String urlRoot = data['url_root'];
       final List images = data['images'];
 
-      // Creiamo una lista di oggetti ImageData
-      return images.map<ImageData>((image) {
+      String? fixedTest = data['fixed_text'].toString();
+      if (fixedTest == "null") {
+        fixedTest = null;
+      }
+      var imagesList = images.map<ImageData>((image) {
         return ImageData(
           url: "$urlRoot${image['id']}.png", // URL completo dell'immagine
           keyword: image['keyword'], // Keyword associata all'immagine
         );
       }).toList();
+
+      // Creiamo una lista di oggetti ImageData
+      return (imagesList, fixedTest);
     } else {
       throw Exception("Errore nella risposta API: ${response.statusCode}");
     }

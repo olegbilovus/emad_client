@@ -47,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isLoadingImages = false;
   bool violence = false;
   bool sex = false;
+  bool _textCorrection = false;
   late String _language;
   late PdfGenerator _pdfGenerator;
   String _prompt = "";
@@ -68,6 +69,10 @@ class _MyHomePageState extends State<MyHomePage> {
     violence = SharedPreferencesSingleton.instance.getViolenceFlag() ?? false;
     dev.log("Viulenz: $violence");
     _language = SharedPreferencesSingleton.instance.getLanguage() ?? "it";
+    dev.log("Lingua: $_language");
+    _textCorrection =
+        SharedPreferencesSingleton.instance.getTextCorrectionFlag() ?? false;
+    dev.log("Correzione testo: $_textCorrection");
   }
 
   Future<void> _generateImages(BuildContext context) async {
@@ -94,14 +99,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
       _checkPreferences();
 
-      final images = await _imageGeneratorController.generateImagesFromPrompt(
-          sex: sex, violence: violence, prompt: prompt, language: _language);
+      final (images, fixed_text) =
+          await _imageGeneratorController.generateImagesFromPrompt(
+              sex: sex,
+              violence: violence,
+              prompt: prompt,
+              language: _language,
+              textCorrection: _textCorrection);
 
       setState(() {
         generatedImages = images; // Aggiorna con la lista di ImageData
+        if (fixed_text != null) {
+          _textEditingController.text = fixed_text;
+        }
       });
 
-      _historyController.addToHistory(prompt);
+      _historyController.addToHistory(fixed_text == null ? prompt : fixed_text);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("${context.loc.error_gen_image}: $e")),
@@ -132,14 +145,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
       _checkPreferences();
 
-      final images = await _imageGeneratorController.generateImagesFromPrompt(
-          sex: sex, violence: violence, prompt: prompt, language: _language);
+      final (images, fixed_text) =
+          await _imageGeneratorController.generateImagesFromPrompt(
+              sex: sex,
+              violence: violence,
+              prompt: prompt,
+              language: _language,
+              textCorrection: _textCorrection);
 
       setState(() {
         generatedImages = images; // Aggiorna con la lista di ImageData
+        if (fixed_text != null) {
+          _textEditingController.text = fixed_text;
+        }
       });
 
-      _historyController.addToHistory(prompt);
+      _historyController.addToHistory(fixed_text == null ? prompt : fixed_text);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("${context.loc.error_gen_image}: $e")),
@@ -701,8 +722,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     FocusManager.instance.primaryFocus?.unfocus();
                   },
                   controller: _textEditingController,
-                  keyboardType: TextInputType.multiline,
+                  keyboardType: TextInputType.text,
                   maxLines: null,
+                  onSubmitted: (value) {
+                    _generateImages(context);
+                  },
                   decoration: InputDecoration(
                     prefixIcon: GestureDetector(
                       onLongPress: () async {
