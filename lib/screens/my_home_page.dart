@@ -110,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         generatedImages = images; // Aggiorna con la lista di ImageData
         if (fixed_text != null) {
+          _prompt = fixed_text;
           _textEditingController.text = fixed_text;
         }
       });
@@ -156,6 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         generatedImages = images; // Aggiorna con la lista di ImageData
         if (fixed_text != null) {
+          _prompt = fixed_text;
           _textEditingController.text = fixed_text;
         }
       });

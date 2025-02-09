@@ -29,7 +29,7 @@ class PdfGenerator {
   }
 
   void setFilename() {
-    this.fileName = "${sentence}_PECS.pdf";
+    this.fileName = "PECS-${sentence.replaceAll(" ", "_").toLowerCase()}.pdf";
   }
 
   Future<Uint8List> generatePDF() async {
