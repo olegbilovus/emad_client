@@ -1,9 +1,11 @@
 import 'dart:developer' as dev;
 
 import 'package:emad_client/extensions/buildcontext/loc.dart';
+import 'package:emad_client/services/api_service.dart';
 import 'package:emad_client/services/shared_preferences_singleton.dart';
 import 'package:emad_client/widget/custom_appbar_back.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -16,6 +18,9 @@ class _SettingsState extends State<Settings> {
   bool _flagSex = false;
   bool _flagViolence = false;
   bool _textCorrection = false;
+  String _version = "";
+  int _clickCount = 0;
+  final TextEditingController _urlController = TextEditingController();
 
   // 1 - Pittogrammi
   // 2 - Realismo
@@ -27,6 +32,16 @@ class _SettingsState extends State<Settings> {
   void initState() {
     super.initState();
     initPreferences();
+    _getVersion();
+    _urlController.text =
+        SharedPreferencesSingleton.instance.getBackendUrl() ?? "";
+  }
+
+  void _getVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      _version = packageInfo.version;
+    });
   }
 
   void initPreferences() async {
@@ -325,56 +340,107 @@ class _SettingsState extends State<Settings> {
                 SizedBox(
                   height: 16,
                 ),
-                Divider(
-                  height: 1,
-                  color: Colors.grey,
-                  thickness: 1.0,
+              ],
+            ),
+            Divider(
+              height: 1,
+              color: Colors.grey,
+              thickness: 1.0,
+            ),
+            Row(
+              children: [
+                Text(
+                  context.loc.ai_text_correction,
+                  style: TextStyle(fontSize: 20),
                 ),
-                SizedBox(
-                  height: 16,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: GestureDetector(
+                    child: Icon(
+                      Icons.info_outline,
+                      color: Color(0xFF60A561),
+                    ),
+                    onTap: () {
+                      mostraBottomSheet(
+                          context.loc.ai_text_correction_1,
+                          context.loc.ai_text_correction_2,
+                          "assets/icons/Notes-bro.png");
+                    },
+                  ),
                 ),
-                Row(
-                  children: [
-                    Text(
-                      context.loc.ai_text_correction,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: GestureDetector(
-                        child: Icon(
-                          Icons.info_outline,
-                          color: Color(0xFF60A561),
-                        ),
-                        onTap: () {
-                          mostraBottomSheet(
-                              context.loc.ai_text_correction_1,
-                              context.loc.ai_text_correction_2,
-                              "assets/icons/Notes-bro.png");
-                        },
-                      ),
-                    ),
-                    Spacer(),
-                    Switch(
-                      // This bool value toggles the switch.
-                      value: _textCorrection,
-                      activeColor: Color(0xFF60A561),
-                      onChanged: (bool value) {
-                        // This is called when the user toggles the switch.
-                        setState(() {
-                          _textCorrection = value;
-                          SharedPreferencesSingleton.instance
-                              .setTextCorrectionFlag(value);
-                        });
-                      },
-                    ),
-                  ],
+                Spacer(),
+                Switch(
+                  // This bool value toggles the switch.
+                  value: _textCorrection,
+                  activeColor: Color(0xFF60A561),
+                  onChanged: (bool value) {
+                    // This is called when the user toggles the switch.
+                    setState(() {
+                      _textCorrection = value;
+                      SharedPreferencesSingleton.instance
+                          .setTextCorrectionFlag(value);
+                    });
+                  },
                 ),
               ],
+            ),
+            Spacer(),
+            GestureDetector(
+              onTap: _handleVersionClick,
+              child: Text(
+                'Version: $_version',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _handleVersionClick() {
+    setState(() {
+      _clickCount++;
+      if (_clickCount >= 5) {
+        _showUrlPopup();
+      }
+    });
+  }
+
+  void _showUrlPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter Backend URL'),
+          content: TextField(
+            controller: _urlController,
+            decoration: InputDecoration(
+              labelText: 'Backend URL',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Handle the URL submission here
+                var url = _urlController.text;
+                SharedPreferencesSingleton.instance.setBackendUrl(url);
+                ApiService.setUrl(url);
+                dev.log("Backend URL: $url");
+                Navigator.of(context).pop();
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
