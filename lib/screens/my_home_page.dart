@@ -8,6 +8,7 @@ import 'package:emad_client/controller/network_controller.dart';
 import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/model/image_data.dart';
 import 'package:emad_client/screens/image_keyword.dart';
+import 'package:emad_client/services/api_service.dart';
 import 'package:emad_client/services/pdf/pdf_generator.dart';
 import 'package:emad_client/services/pdf/save_pdf.dart';
 import 'package:emad_client/services/shared_preferences_singleton.dart';
@@ -51,8 +52,9 @@ class _MyHomePageState extends State<MyHomePage> {
   late String _language;
   late PdfGenerator _pdfGenerator;
   String _prompt = "";
-
   bool isGeneratingPDF = false;
+
+  String _backendUrl = "";
 
   @override
   void initState() {
@@ -65,14 +67,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _checkPreferences() {
     sex = SharedPreferencesSingleton.instance.getSexFlag() ?? false;
-    dev.log("Sexo $sex");
+    dev.log("Sex: $sex");
     violence = SharedPreferencesSingleton.instance.getViolenceFlag() ?? false;
-    dev.log("Viulenz: $violence");
+    dev.log("Violence: $violence");
     _language = SharedPreferencesSingleton.instance.getLanguage() ?? "it";
-    dev.log("Lingua: $_language");
+    dev.log("Language: $_language");
     _textCorrection =
         SharedPreferencesSingleton.instance.getTextCorrectionFlag() ?? false;
-    dev.log("Correzione testo: $_textCorrection");
+    dev.log("Text correction: $_textCorrection");
+    _backendUrl =
+        SharedPreferencesSingleton.instance.getBackendUrl() ?? ApiService.url;
+    ApiService.setUrl(_backendUrl);
+    dev.log("Backend URL: $_backendUrl");
   }
 
   Future<void> _generateImages(BuildContext context) async {
@@ -101,6 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       final (images, fixed_text) =
           await _imageGeneratorController.generateImagesFromPrompt(
+              url: _backendUrl,
               sex: sex,
               violence: violence,
               prompt: prompt,
@@ -148,6 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       final (images, fixed_text) =
           await _imageGeneratorController.generateImagesFromPrompt(
+              url: _backendUrl,
               sex: sex,
               violence: violence,
               prompt: prompt,

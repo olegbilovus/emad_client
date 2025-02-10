@@ -4,20 +4,25 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   //url del backend
-  //final String url = "https://api.3111616.xyz";
-  final String url =
-      "https://7325af20a14a05d54ccbd2c6111844da.3111616.xyz"; //testing url
+  //static final String url = "https://api.3111616.xyz";
+  static String url =
+      "https://7325af20a14a05d54ccbd2c6111844da.3111616.xyz"; //dev url
   final _clientApiKey = "84a5bfe58847ed1709f3cd075db8651f";
 
   ApiService();
+
+  static setUrl(String url) {
+    ApiService.url = url;
+  }
 
   //metodo che chiama il servizio di generazione delle immagini di Arasaac
   Future<http.Response> getImages(bool sex, bool violence, String prompt,
       String lan, bool textCorrection) async {
     String path =
         "/v1/images/?sex=$sex&violence=$violence&text=$prompt&language=$lan&fix_sentence=$textCorrection";
-    dev.log("L'url della richiesta GET è: ${url + path}");
-    return http.get(Uri.parse(url + path));
+    var uri = Uri.parse(url + path);
+    dev.log("L'url della richiesta GET è: ${uri.toString()}");
+    return http.get(uri);
   }
 
   //metodo che chiama il servizio di GenAI di Azure
@@ -33,7 +38,8 @@ class ApiService {
       bool sex, bool violence, String keyword, String lan) {
     String path =
         "/v2/images/?sex=$sex&violence=$violence&text=$keyword&language=$lan&one_image=false";
-    dev.log("L'url della richiesta GET è: ${url + path}");
-    return http.get(Uri.parse(url + path));
+    var uri = Uri.parse(url + path);
+    dev.log("L'url della richiesta GET è: ${uri.toString()}");
+    return http.get(uri);
   }
 }

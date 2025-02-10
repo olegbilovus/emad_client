@@ -10,7 +10,8 @@ class ImageGeneratorController {
   final ApiService _apiService = ApiService();
 
   Future<(List<ImageData>, String?)> generateImagesFromPrompt(
-      {required bool violence,
+      {required String url,
+      required bool violence,
       required bool sex,
       required String prompt,
       required String language,

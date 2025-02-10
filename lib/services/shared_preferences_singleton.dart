@@ -16,6 +16,7 @@ class SharedPreferencesSingleton {
   final _aiStyleKey = "AIstyle";
   final _languageKey = "language";
   final _textCorrectionKey = "textCorrection";
+  final _backendUrlKey = "backendUrl";
 
   Future<void> init() async {
     _prefs ??= await SharedPreferences.getInstance();
@@ -106,5 +107,13 @@ class SharedPreferencesSingleton {
 
   bool? getTextCorrectionFlag() {
     return _prefs?.getBool(_textCorrectionKey);
+  }
+
+  void setBackendUrl(String text) {
+    _prefs?.setString(_backendUrlKey, text);
+  }
+
+  String? getBackendUrl() {
+    return _prefs?.getString(_backendUrlKey);
   }
 }
