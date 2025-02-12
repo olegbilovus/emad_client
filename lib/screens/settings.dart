@@ -55,6 +55,8 @@ class _SettingsState extends State<Settings> {
           SharedPreferencesSingleton.instance.getLanguage() ?? "it";
       _textCorrection =
           SharedPreferencesSingleton.instance.getTextCorrectionFlag() ?? false;
+      _urlController.text =
+          SharedPreferencesSingleton.instance.getBackendUrl() ?? ApiService.url;
     });
   }
 
