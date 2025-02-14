@@ -1,6 +1,8 @@
-# emad_client
+# emad_client - CAApp
 
 Flutter application for Enterprise Mobile Application Development project.
+<br>
+<img src="https://github.com/user-attachments/assets/2a67ff79-855f-4582-aeaa-2079a34f5b55" width=200, height=200>
 
 CAApp is a multiplatform application for **Augmentative Alternative Communication**. Through the prompt, it is possible to insert a sentence and obtain a sequence of images **(PECS)** to communicate with people with complex communication needs. It also offers the possibility of generating custom images generated with **GenAI** and image storage via Firebase.
 
@@ -27,3 +29,9 @@ CAApp is structured on a Client-Server architecture, based on [RestAPI](https://
 |[cloud_firestore](https://pub.dev/packages/cloud_firestore)        |   ✅    |   ✅   |       |   ✅   |   ✅   |    ✅    |
 |[image_picker](https://pub.dev/packages/image_picker)              |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
 |[http](https://pub.dev/packages/http)                              |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅    |
+
+## Demo
+https://github.com/user-attachments/assets/5c6622dd-b55c-49b3-bde5-7a1ab18bbca8
+
+
+
