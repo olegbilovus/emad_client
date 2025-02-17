@@ -9,6 +9,7 @@ import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/model/image_data.dart';
 import 'package:emad_client/screens/image_keyword.dart';
 import 'package:emad_client/services/api_service.dart';
+import 'package:emad_client/services/enum.dart';
 import 'package:emad_client/services/pdf/pdf_generator.dart';
 import 'package:emad_client/services/pdf/save_pdf.dart';
 import 'package:emad_client/services/shared_preferences_singleton.dart';
@@ -49,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool violence = false;
   bool sex = false;
   bool _textCorrection = false;
-  late String _language;
+  late Language _language;
   late PdfGenerator _pdfGenerator;
   String _prompt = "";
   bool isGeneratingPDF = false;
@@ -70,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
     dev.log("Sex: $sex");
     violence = SharedPreferencesSingleton.instance.getViolenceFlag() ?? false;
     dev.log("Violence: $violence");
-    _language = SharedPreferencesSingleton.instance.getLanguage() ?? "it";
+    _language = SharedPreferencesSingleton.instance.getLanguage();
     dev.log("Language: $_language");
     _textCorrection =
         SharedPreferencesSingleton.instance.getTextCorrectionFlag() ?? false;
@@ -360,7 +361,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               imageData = await _imageGeneratorController
                                   .generateUsingIA(
                                       _imageGeneratorController.concatenaPrompt(
-                                          context, style, promptController),
+                                          _language, style, promptController),
                                       keyword);
 
                               // Non sostituire l'immagine finché non viene confermata

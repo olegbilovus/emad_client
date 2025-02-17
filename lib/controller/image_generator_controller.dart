@@ -4,6 +4,7 @@ import 'dart:developer' as dev;
 import 'package:emad_client/costants/ai_styles.dart';
 import 'package:emad_client/model/image_data.dart';
 import 'package:emad_client/services/api_service.dart';
+import 'package:emad_client/services/enum.dart';
 import 'package:flutter/material.dart';
 
 class ImageGeneratorController {
@@ -14,7 +15,7 @@ class ImageGeneratorController {
       required bool violence,
       required bool sex,
       required String prompt,
-      required String language,
+      required Language language,
       required bool textCorrection}) async {
     final response = await _apiService.getImages(
         sex, violence, prompt, language, textCorrection);
@@ -70,8 +71,15 @@ class ImageGeneratorController {
     }
   }
 
-  String concatenaPrompt(
-      BuildContext context, int stile, TextEditingController promptController) {
+  String concatenaPrompt(Language lan, int stile, TextEditingController promptController) {
+    if (lan == Language.it) {
+      return concatenaPromptItalian(stile, promptController);
+    } else {
+      return concatenaPromptEnglish(stile, promptController);
+    }
+  }
+
+  String concatenaPromptItalian(int stile, TextEditingController promptController) {
     switch (stile) {
       case 1:
         return "Disegna ${promptController.text} nello stile ${Stili.pittogrammi.name}";
@@ -84,11 +92,24 @@ class ImageGeneratorController {
     }
   }
 
+  String concatenaPromptEnglish(int stile, TextEditingController promptController) {
+    switch (stile) {
+      case 1:
+        return "Draw ${promptController.text} in ${Stili.pittogrammi.name} style";
+      case 2:
+        return "Draw ${promptController.text} in ${Stili.realismo.name} style";
+      case 3:
+        return "Draw ${promptController.text} in ${Stili.cartoon.name} style";
+      default:
+        return "Draw ${promptController.text}";
+    }
+  }
+
   Future<List<String>> generateImagesFromKeyword({
     required bool violence,
     required bool sex,
     required String keyword,
-    required String language,
+    required Language language,
   }) async {
     final response = await _apiService.getImagesFromKeyword(
         sex, violence, keyword, language);

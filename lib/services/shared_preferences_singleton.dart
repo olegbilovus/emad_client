@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:collection';
+import 'package:emad_client/services/enum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesSingleton {
@@ -93,12 +94,14 @@ class SharedPreferencesSingleton {
     return _prefs?.getInt(_aiStyleKey);
   }
 
-  Future<void> setLanguage(String lan) async {
-    await _prefs?.setString(_languageKey, lan);
+  Future<void> setLanguage(Language lan) async {
+    await _prefs?.setString(_languageKey, lan.name);
   }
 
-  String? getLanguage() {
-    return _prefs?.getString(_languageKey);
+  Language getLanguage() {
+    return Language.values.firstWhere(
+        (e) => e.name == _prefs?.getString(_languageKey),
+        orElse: () => Language.it);
   }
 
   Future<void> setTextCorrectionFlag(bool flag) async {

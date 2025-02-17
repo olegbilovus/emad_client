@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 
 import 'package:emad_client/extensions/buildcontext/loc.dart';
 import 'package:emad_client/services/api_service.dart';
+import 'package:emad_client/services/enum.dart';
 import 'package:emad_client/services/shared_preferences_singleton.dart';
 import 'package:emad_client/widget/custom_appbar_back.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class _SettingsState extends State<Settings> {
   // 2 - Realismo
   // 3 - Cartoon
   int _selectedValue = 1;
-  String _selectedLanguage = "";
+  Language _selectedLanguage = Language.it;
 
   @override
   void initState() {
@@ -51,8 +52,7 @@ class _SettingsState extends State<Settings> {
       _flagViolence =
           SharedPreferencesSingleton.instance.getViolenceFlag() ?? false;
       _selectedValue = SharedPreferencesSingleton.instance.getAIstyle() ?? 1;
-      _selectedLanguage =
-          SharedPreferencesSingleton.instance.getLanguage() ?? "it";
+      _selectedLanguage = SharedPreferencesSingleton.instance.getLanguage();
       _textCorrection =
           SharedPreferencesSingleton.instance.getTextCorrectionFlag() ?? false;
       _urlController.text =
@@ -282,7 +282,7 @@ class _SettingsState extends State<Settings> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      _selectedLanguage = "it";
+                      _selectedLanguage = Language.it;
                       SharedPreferencesSingleton.instance
                           .setLanguage(_selectedLanguage);
                     });
@@ -301,7 +301,7 @@ class _SettingsState extends State<Settings> {
                           style: TextStyle(fontSize: 16),
                         ),
                       ),
-                      if (_selectedLanguage == "it")
+                      if (_selectedLanguage == Language.it)
                         Icon(
                           Icons.check_circle,
                           color: Color(0xFF60A561),
@@ -312,7 +312,7 @@ class _SettingsState extends State<Settings> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      _selectedLanguage = "en";
+                      _selectedLanguage = Language.en;
                       SharedPreferencesSingleton.instance
                           .setLanguage(_selectedLanguage);
                     });
@@ -331,7 +331,7 @@ class _SettingsState extends State<Settings> {
                           style: TextStyle(fontSize: 16),
                         ),
                       ),
-                      if (_selectedLanguage == "en")
+                      if (_selectedLanguage == Language.en)
                         Icon(
                           Icons.check_circle,
                           color: Color(0xFF60A561),
