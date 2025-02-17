@@ -123,7 +123,9 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       });
 
-      _historyController.addToHistory(fixed_text == null ? prompt : fixed_text);
+      var history_entry =
+          HistoryEntry(fixed_text == null ? prompt : fixed_text, _language);
+      _historyController.addToHistory(history_entry);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("${context.loc.error_gen_image}: $e")),
@@ -136,10 +138,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _generateImagesFromHistory(int index) async {
-    //prendi il testo dalla cronologia
-    final prompt = _historyController.getHistory().elementAt(index);
-    _prompt = prompt;
-
     setState(() {
       isLoadingImages = true;
       generatedImages = [];
@@ -154,13 +152,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
       _checkPreferences();
 
+      //prendi il testo dalla cronologia
+      final history_entry = _historyController.getHistory().elementAt(index);
+      _prompt = history_entry.text;
+      _language = history_entry.language;
+      SharedPreferencesSingleton.instance.setLanguage(_language);
+
       final (images, fixed_text) =
           await _imageGeneratorController.generateImagesFromPrompt(
               url: _backendUrl,
               sex: sex,
               violence: violence,
-              prompt: prompt,
-              language: _language,
+              prompt: history_entry.text,
+              language: history_entry.language,
               textCorrection: _textCorrection);
 
       setState(() {
@@ -171,7 +175,9 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       });
 
-      _historyController.addToHistory(fixed_text == null ? prompt : fixed_text);
+      var new_history_entry =
+          HistoryEntry(fixed_text == null ? _prompt : fixed_text, _language);
+      _historyController.addToHistory(new_history_entry);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("${context.loc.error_gen_image}: $e")),
@@ -261,7 +267,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ],
                               ),
                               child: Text(
-                                history.elementAt(index),
+                                history.elementAt(index).language.emoji +
+                                    history.elementAt(index).text,
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
