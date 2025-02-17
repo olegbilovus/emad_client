@@ -1,7 +1,10 @@
-import 'dart:convert';
 import 'dart:collection';
+import 'dart:convert';
+
 import 'package:emad_client/services/enum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../controller/history_controller.dart';
 
 class SharedPreferencesSingleton {
   SharedPreferencesSingleton._privateConstructor();
@@ -47,20 +50,23 @@ class SharedPreferencesSingleton {
   }
 
   // Salva una coda come JSON in SharedPreferences
-  Future<void> setQueue(String key, Queue<String> queue) async {
-    List<String> queueList = queue.toList(); // Converti la coda in una lista
+  Future<void> setQueue(String key, Queue<HistoryEntry> queue) async {
+    List<HistoryEntry> queueList =
+        queue.toList(); // Converti la coda in una lista
     String jsonString = jsonEncode(queueList); // Serializza la lista come JSON
     await _prefs?.setString(key, jsonString);
   }
 
   // Recupera una coda da SharedPreferences
-  Queue<String> getQueue(String key) {
+  Queue<HistoryEntry> getQueue(String key) {
     String? jsonString = _prefs?.getString(key);
-    Queue<String> queue = Queue<String>();
+    Queue<HistoryEntry> queue = Queue<HistoryEntry>();
 
     if (jsonString != null) {
-      List<String> queueList = List<String>.from(jsonDecode(jsonString));
-      queue.addAll(queueList); // Ricostruisce la coda dalla lista
+      List<dynamic> queueList = jsonDecode(jsonString);
+      queueList.forEach((element) {
+        queue.add(HistoryEntry.fromJson(jsonDecode(element)));
+      });
     }
 
     return queue;
