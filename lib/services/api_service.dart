@@ -1,5 +1,6 @@
 import 'dart:developer' as dev;
 
+import 'package:emad_client/services/enum.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -19,9 +20,9 @@ class ApiService {
 
   //metodo che chiama il servizio di generazione delle immagini di Arasaac
   Future<http.Response> getImages(bool sex, bool violence, String prompt,
-      String lan, bool textCorrection) async {
+      Language lan, bool textCorrection) async {
     String path =
-        "/v1/images/?sex=$sex&violence=$violence&text=$prompt&language=$lan&fix_sentence=$textCorrection";
+        "/v1/images/?sex=$sex&violence=$violence&text=$prompt&language=${lan.name}&fix_sentence=$textCorrection";
     var uri = Uri.parse(url + path);
     dev.log("getImages: ${uri.toString()}", name: _logName);
     return http.get(uri);
@@ -38,9 +39,9 @@ class ApiService {
 
   //metodo che chiama il servizio di generazione delle immagini per una keyword
   Future<http.Response> getImagesFromKeyword(
-      bool sex, bool violence, String keyword, String lan) {
+      bool sex, bool violence, String keyword, Language lan) {
     String path =
-        "/v2/images/?sex=$sex&violence=$violence&text=$keyword&language=$lan&one_image=false";
+        "/v2/images/?sex=$sex&violence=$violence&text=$keyword&language=${lan.name}&one_image=false";
     var uri = Uri.parse(url + path);
     dev.log("getImagesFromKeyword: ${uri.toString()}", name: _logName);
     return http.get(uri);
