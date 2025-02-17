@@ -13,7 +13,7 @@ class HistoryEntry {
   @override
   bool operator ==(Object other) {
     if (other is HistoryEntry) {
-      return text == other.text && language == other.language;
+      return text.toLowerCase() == other.text.toLowerCase() && language == other.language;
     }
     return false;
   }
